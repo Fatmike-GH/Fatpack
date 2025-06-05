@@ -1,18 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35818.85 d17.13
+VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fatpack", "Fatpack\Fatpack.vcxproj", "{23B3307D-097A-4F6F-BD3D-AB61BEA6D30C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6482B097-A9DE-4D2F-B103-7DF0BC56B231} = {6482B097-A9DE-4D2F-B103-7DF0BC56B231}
+		{D6392848-12A3-4B94-BF4C-1CE727F12D0B} = {D6392848-12A3-4B94-BF4C-1CE727F12D0B}
+		{E373949F-E084-4DD4-A445-43B2672C42AA} = {E373949F-E084-4DD4-A445-43B2672C42AA}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Console", "Loader_Console\Loader_Console.vcxproj", "{E373949F-E084-4DD4-A445-43B2672C42AA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceAdder", "ResourceAdder\ResourceAdder.vcxproj", "{D6392848-12A3-4B94-BF4C-1CE727F12D0B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{23B3307D-097A-4F6F-BD3D-AB61BEA6D30C} = {23B3307D-097A-4F6F-BD3D-AB61BEA6D30C}
-		{6482B097-A9DE-4D2F-B103-7DF0BC56B231} = {6482B097-A9DE-4D2F-B103-7DF0BC56B231}
-		{E373949F-E084-4DD4-A445-43B2672C42AA} = {E373949F-E084-4DD4-A445-43B2672C42AA}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Windows", "Loader_Windows\Loader_Windows.vcxproj", "{6482B097-A9DE-4D2F-B103-7DF0BC56B231}"
 EndProject

@@ -78,36 +78,18 @@ namespace PELoader
 
         switch (type)
         {
-        case IMAGE_REL_BASED_ABSOLUTE:
-          break;
+          case IMAGE_REL_BASED_ABSOLUTE:
+            break;
 
-        case IMAGE_REL_BASED_DIR64:
-        {
-          ULONGLONG* patchAddr = (ULONGLONG*)((BYTE*)peImage->GetImageBase() + reloc->VirtualAddress + offset);
-          *patchAddr += baseDelta;
-          break;
-        }
+          case IMAGE_REL_BASED_DIR64:
+          {
+            ULONGLONG* patchAddr = (ULONGLONG*)((BYTE*)peImage->GetImageBase() + reloc->VirtualAddress + offset);
+            *patchAddr += baseDelta;
+            break;
+          }
 
-        case IMAGE_REL_BASED_HIGHLOW:
-        {
-          DWORD* patchAddr = (DWORD*)((BYTE*)peImage->GetImageBase() + reloc->VirtualAddress + offset);
-          *patchAddr += (DWORD)baseDelta;
-          break;
-        }
-
-        case IMAGE_REL_BASED_HIGH:
-        {
-          WORD* patchAddr = (WORD*)((BYTE*)peImage->GetImageBase() + reloc->VirtualAddress + offset);
-          *patchAddr += HIWORD((DWORD)baseDelta);
-          break;
-        }
-
-        case IMAGE_REL_BASED_LOW:
-        {
-          WORD* patchAddr = (WORD*)((BYTE*)peImage->GetImageBase() + reloc->VirtualAddress + offset);
-          *patchAddr += LOWORD((DWORD)baseDelta);
-          break;
-        }
+          default:
+            break;
         }
       }
 

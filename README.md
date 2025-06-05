@@ -38,6 +38,7 @@ A practical application of my PE loader: https://github.com/Fatmike-GH/PELoader
     - DLL_THREAD_DETACH  
     - DLL_PROCESS_DETACH  
   - TLS Data
+- Rebasing if necessary 
 
 ## Solution Overview
 
@@ -72,12 +73,11 @@ A simple console application used to embed the loader stubs into ``Fatpack.exe``
 
 The console application (``Fatpack.exe``) is used by the user to package their target executable. Its main responsibilities include:  
 
-- Determining the appropriate loader stub (Loader_Console or Loader_Windows) based on the type of the target executable, loading it from an embedded resource, and saving it to disk.  
+- Determining the appropriate loader stub (Loader_Console or Loader_Windows) based on the type of the target executable, loading it from an embedded resource, and saving it to disk. 
+- Rebasing the loader stub if the target does not have a relocation table and there is an image base conflict.  
 - Extracting the icon from the target executable and embedding it into the selected loader stub.  
 - Extracting and embedding the application manifest from the target executable. This step is essential, as the manifest may specify specific module versions required for correct execution.  
 - Compressing the target executable using the LZMA algorithm and appending it to the loader stub.  
-
->**Note:** Rebasing of the loader stub is not yet implemented. If the target executable lacks a relocation table, the loader stub may fail to function properly. This is due to a potential conflict between the image base addresses of the loader stub and the target executable.  
 
 ![image](Images/Concept.PNG)
 
