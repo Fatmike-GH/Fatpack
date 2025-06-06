@@ -26,22 +26,12 @@ namespace IconExtractor
   {
   }
 
-  int CALLBACK IconExtractor::EnumResNameProc(HMODULE hModule, LPCWSTR lpType, LPWSTR lpName, LONG_PTR lParam)
-  {
-    if (lpType == RT_GROUP_ICON)
-    {
-      *((LPWSTR*)lParam) = lpName;
-      return FALSE; // Stop after finding the first icon
-    }
-    return TRUE;
-  }
-
-  BOOL IconExtractor::ExtractAndSetIcon(LPWSTR sourceExe, LPWSTR targetExe)
+  bool IconExtractor::ExtractAndSetIcon(LPWSTR sourceExe, LPWSTR targetExe)
   {
     HMODULE sourceModuleHandle = LoadLibraryExW(sourceExe, nullptr, LOAD_LIBRARY_AS_DATAFILE);
     if (!sourceModuleHandle)
     {
-      return FALSE;
+      return false;
     }
 
     LPCWSTR groupIconName = nullptr;
@@ -50,21 +40,21 @@ namespace IconExtractor
     if (!groupIconName)
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     HRSRC groupIconHandle = FindResource(sourceModuleHandle, groupIconName, RT_GROUP_ICON);
     if (!groupIconHandle)
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     HGLOBAL groupIconDataHandle = LoadResource(sourceModuleHandle, groupIconHandle);
     if (!groupIconDataHandle)
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     LPVOID groupIconData = LockResource(groupIconDataHandle);
@@ -74,14 +64,14 @@ namespace IconExtractor
     if (!updateHandle)
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     // Update the icon group resource
     if (!UpdateResource(updateHandle, RT_GROUP_ICON, groupIconName, MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), groupIconData, groupIconSize))
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     ICONGROUP* iconGroup = (ICONGROUP*)groupIconData;
@@ -99,7 +89,7 @@ namespace IconExtractor
 
           if (!UpdateResource(updateHandle, RT_ICON, MAKEINTRESOURCE(iconId), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), iconData, iconSize))
           {
-            return FALSE;
+            return false;
           }
         }
       }
@@ -109,20 +99,20 @@ namespace IconExtractor
     if (!EndUpdateResource(updateHandle, FALSE))
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     FreeLibrary(sourceModuleHandle);
 
-    return TRUE;
+    return true;
   }
 
-  BOOL IconExtractor::ExtractAndSetIconWithCustomIds(LPWSTR sourceExe, LPWSTR targetExe)
+  bool IconExtractor::ExtractAndSetIconWithCustomIds(LPWSTR sourceExe, LPWSTR targetExe)
   {
     HMODULE sourceModuleHandle = LoadLibraryExW(sourceExe, nullptr, LOAD_LIBRARY_AS_DATAFILE);
     if (!sourceModuleHandle)
     {
-      return FALSE;
+      return false;
     }
 
     LPCWSTR groupIconName = nullptr;
@@ -131,7 +121,7 @@ namespace IconExtractor
     if (!groupIconName)
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     // Find and load the RT_GROUP_ICON resource
@@ -139,14 +129,14 @@ namespace IconExtractor
     if (!groupIconHandle)
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     HGLOBAL groupIconDataHandle = LoadResource(sourceModuleHandle, groupIconHandle);
     if (!groupIconDataHandle)
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     ICONGROUP* groupIcon = (ICONGROUP*)LockResource(groupIconDataHandle);
@@ -158,7 +148,7 @@ namespace IconExtractor
     if (!newGroupIcon)
     {
       FreeLibrary(sourceModuleHandle);
-      return FALSE;
+      return false;
     }
 
     // Copy original RT_GROUP_ICON data
@@ -169,7 +159,7 @@ namespace IconExtractor
     {
       FreeLibrary(sourceModuleHandle);
       free(newGroupIcon);
-      return FALSE;
+      return false;
     }
 
     // Update the icon group with a new ID
@@ -177,7 +167,7 @@ namespace IconExtractor
     {
       FreeLibrary(sourceModuleHandle);
       free(newGroupIcon);
-      return FALSE;
+      return false;
     }
 
     // Extract and update RT_ICON resources with new IDs
@@ -209,7 +199,7 @@ namespace IconExtractor
     {
       FreeLibrary(sourceModuleHandle);
       free(newGroupIcon);
-      return FALSE;
+      return false;
     }
 
     // Finalize the update
@@ -217,12 +207,22 @@ namespace IconExtractor
     {
       FreeLibrary(sourceModuleHandle);
       free(newGroupIcon);
-      return FALSE;
+      return false;
     }
 
     FreeLibrary(sourceModuleHandle);
     free(newGroupIcon);
 
+    return true;
+  }
+
+  BOOL CALLBACK IconExtractor::EnumResNameProc(HMODULE hModule, LPCWSTR lpType, LPWSTR lpName, LONG_PTR lParam)
+  {
+    if (lpType == RT_GROUP_ICON)
+    {
+      *((LPWSTR*)lParam) = lpName;
+      return FALSE; // Stop after finding the first icon
+    }
     return TRUE;
   }
 }

@@ -22,6 +22,7 @@ namespace PEFile
 
     bool IsConsole();
 
+    bool IntersectsWith(PEFile& other);
     bool HasRelocationTable();
     ULONGLONG GetNextImageBase();
     bool Rebase(ULONGLONG newImageBase);

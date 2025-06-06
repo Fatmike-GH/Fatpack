@@ -10,5 +10,6 @@ namespace Compressor
     ~Compressor();
 
     bool Compress(BYTE* source, size_t sourceLength, BYTE** compressed, size_t* compressedSize);
+    void Free(BYTE* compressed);
   };
 }

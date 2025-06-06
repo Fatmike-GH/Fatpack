@@ -12,10 +12,10 @@ namespace IconExtractor
     IconExtractor();
     ~IconExtractor();
 
-    BOOL ExtractAndSetIcon(LPWSTR sourceExe, LPWSTR targetExe);
-    BOOL ExtractAndSetIconWithCustomIds(LPWSTR sourceExe, LPWSTR targetExe);
+    bool ExtractAndSetIcon(LPWSTR sourceExe, LPWSTR targetExe);
+    bool ExtractAndSetIconWithCustomIds(LPWSTR sourceExe, LPWSTR targetExe);
 
     private:
-      static int CALLBACK EnumResNameProc(HMODULE hModule, LPCWSTR lpType, LPWSTR lpName, LONG_PTR lParam);
+      static BOOL CALLBACK EnumResNameProc(HMODULE hModule, LPCWSTR lpType, LPWSTR lpName, LONG_PTR lParam);
   };
 }

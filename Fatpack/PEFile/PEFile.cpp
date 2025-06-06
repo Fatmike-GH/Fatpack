@@ -18,6 +18,8 @@ namespace PEFile
 
   bool PEFile::LoadFromBuffer(BYTE* fileBuffer, DWORD size)
   {
+    if (fileBuffer == nullptr || size == 0) return false;
+
     DeleteBuffer();
     _bufferSize = size;
     _buffer = new BYTE[_bufferSize];
@@ -46,6 +48,20 @@ namespace PEFile
   {
     if (_buffer == nullptr || _bufferSize == 0) return false;
     return (_PIMAGE_NT_HEADERS->OptionalHeader.Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI);
+  }
+
+  bool PEFile::IntersectsWith(PEFile& other)
+  {
+    auto imageBase = GetImageBase();
+    auto imageEnd = imageBase + GetSizeOfImage();
+    auto otherImageBase = other.GetImageBase();
+    auto otherImageEnd = otherImageBase + other.GetSizeOfImage();
+
+    if (imageBase == otherImageBase) return true;
+    if (otherImageBase >= imageBase && otherImageBase <= imageEnd) return true;
+    if (otherImageBase <= imageBase && otherImageEnd >= imageBase) return true;
+
+    return false;
   }
 
   bool PEFile::HasRelocationTable()
