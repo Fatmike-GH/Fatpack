@@ -53,7 +53,7 @@ bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName)
   if (argc != 3)
   {
     console.WriteLine(L"\n..::[Fatmike 2025]::..\n");
-    console.WriteLine(L"Version: Fatpack v1.3.0");
+    console.WriteLine(L"Version: Fatpack v1.4.0");
     console.WriteLine(L"Usage:\t fatpack.exe inputfile.exe outputfile.exe");
     return false;
   }
