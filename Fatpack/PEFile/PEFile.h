@@ -20,6 +20,9 @@ namespace PEFile
     ULONGLONG GetImageBase();
     DWORD GetSizeOfImage();
 
+    bool IsPEFile();    
+    bool Isx64();
+    bool IsNative();
     bool IsConsole();
 
     bool IntersectsWith(PEFile& other);

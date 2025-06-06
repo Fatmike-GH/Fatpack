@@ -44,9 +44,30 @@ namespace PEFile
     return _PIMAGE_NT_HEADERS->OptionalHeader.SizeOfImage;
   }
 
+  bool PEFile::IsPEFile()
+  {
+    if (_buffer == nullptr || _bufferSize == 0) return false;
+    return (_PIMAGE_DOS_HEADER->e_magic == IMAGE_DOS_SIGNATURE && _PIMAGE_NT_HEADERS->Signature == IMAGE_NT_SIGNATURE);
+  }
+
+  bool PEFile::Isx64()
+  {
+    if (_buffer == nullptr || _bufferSize == 0) return false;
+    return (_PIMAGE_NT_HEADERS->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64);
+  }
+
+  bool PEFile::IsNative()
+  {
+    if (_buffer == nullptr || _bufferSize == 0) return false;
+    if (!Isx64()) return false;
+    PIMAGE_DATA_DIRECTORY comDirectory = &_PIMAGE_NT_HEADERS->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR];
+    return (comDirectory->VirtualAddress == 0 && comDirectory->Size == 0);
+  }
+
   bool PEFile::IsConsole()
   {
     if (_buffer == nullptr || _bufferSize == 0) return false;
+    if (!Isx64()) return false;
     return (_PIMAGE_NT_HEADERS->OptionalHeader.Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI);
   }
 

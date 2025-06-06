@@ -10,6 +10,7 @@
 
 bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName);
 bool ReadInputFile(LPWSTR inputFileName, PEFile::PEFile& inputFile);
+bool IsInputFileSupported(PEFile::PEFile& inputFile);
 bool LoadPELoaderFromResource(PEFile::PEFile& peLoader, bool useConsoleStub);
 bool RebasePELoader(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader);
 bool SavePELoader(PEFile::PEFile& peLoader, LPWSTR outputFileName);
@@ -24,16 +25,14 @@ int main()
 
   PEFile::PEFile inputFile;
   if (!ReadInputFile(inputFileName, inputFile)) return 0;
+  if (!IsInputFileSupported(inputFile)) return 0;
 
   PEFile::PEFile peLoader;
   if (!LoadPELoaderFromResource(peLoader, inputFile.IsConsole())) return 0;
-
   if (!RebasePELoader(inputFile, peLoader)) return 0;
-
   if (!SavePELoader(peLoader, outputFileName)) return 0;
 
   if (!AppendResourcesToPELoader(inputFileName, outputFileName)) return 0;
-
   if (!CompressAndAppendToPELoader(inputFile, outputFileName)) return 0;
   
   Console::Console console;
@@ -54,7 +53,7 @@ bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName)
   if (argc != 3)
   {
     console.WriteLine(L"\n..::[Fatmike 2025]::..\n");
-    console.WriteLine(L"Version: Fatpack v1.2.0");
+    console.WriteLine(L"Version: Fatpack v1.3.0");
     console.WriteLine(L"Usage:\t fatpack.exe inputfile.exe outputfile.exe");
     return false;
   }
@@ -82,6 +81,27 @@ bool ReadInputFile(LPWSTR inputFileName, PEFile::PEFile& inputFile)
   }
 
   return inputFile.LoadFromBuffer(binaryFileReader.GetBuffer(), binaryFileReader.GetBufferSize());
+}
+
+bool IsInputFileSupported(PEFile::PEFile& inputFile)
+{
+  Console::Console console;
+  if (!inputFile.IsPEFile())
+  {
+    console.WriteLine(L"inputfile is not a valid pe file.");
+    return false;
+  }
+  if (!inputFile.Isx64())
+  {
+    console.WriteLine(L"inputfile is not a x64 pe file.");
+    return false;
+  }
+  if (!inputFile.IsNative())
+  {
+    console.WriteLine(L"inputfile is not a native pe file.");
+    return false;
+  }
+  return true;
 }
 
 bool LoadPELoaderFromResource(PEFile::PEFile& peLoader, bool useConsoleStub)
