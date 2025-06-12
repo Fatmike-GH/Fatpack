@@ -22,7 +22,6 @@ A practical application of my PE loader: https://github.com/Fatmike-GH/PELoader
   - Therefore supports Rust- and Delphi exectuables for example  
 - No CRT usage in Fatpack.exe and Stubs (WinAPI only) and therefore no C/C++ redistributables are required  
 - Icon extraction
-- Manifest extraction (required if specfic module versions of the target executable are specified)
 
 ### Technical Features  
 
@@ -38,7 +37,8 @@ A practical application of my PE loader: https://github.com/Fatmike-GH/PELoader
     - DLL_THREAD_DETACH  
     - DLL_PROCESS_DETACH  
   - TLS Data
-- Rebasing if necessary 
+- Rebasing if necessary
+- Manifest extraction (required, if specfic module versions of the target executable are specified)  
 
 ## Solution Overview
 
