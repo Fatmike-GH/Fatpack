@@ -134,6 +134,10 @@ bool LoadPELoaderFromResource(PEFile::PEFile& peLoader, bool useConsoleStub)
   return true;
 }
 
+// TO DO
+// Rebasing the pe loader to the next possible image base 'behind' the target is not the way to go.
+// This calculated image base can still be occupied by stack, or by other loaded modules.
+// Therefore i keep ASLR activated, for better results
 bool RebasePELoader(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
 {
   if (!inputFile.HasRelocationTable() && inputFile.IntersectsWith(peLoader))
