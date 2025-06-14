@@ -127,7 +127,7 @@
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>WinMain</EntryPointSymbol>
       <EnableUAC>false</EnableUAC>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
@@ -155,7 +155,7 @@
       <EntryPointSymbol>WinMain</EntryPointSymbol>
       <AdditionalOptions>/DEBUG:NONE /EMITPOGOPHASEINFO %(AdditionalOptions)</AdditionalOptions>
       <EnableUAC>false</EnableUAC>
-      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
   </ItemDefinitionGroup>
