@@ -12,7 +12,7 @@ A practical application of my PE loader: https://github.com/Fatmike-GH/PELoader
 
 ``Fatpack.exe inputfile.exe outputfile.exe [OPTIONS]``  
 ``[OPTIONS]``  
-``-r, --resource: Packs inputfile.exe as resource (DEFAULT)``  
+``-r, --resource : Packs inputfile.exe as resource (DEFAULT)``  
 ``-s, --section  : Packs inputfile.exe as section (EXPERIMENTAL)``
 
 ## Features
