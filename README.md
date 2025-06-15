@@ -62,7 +62,7 @@ The solution consists of four projects:
 
 ### Loader Stubs  
 
-Both ``Loader_Console`` and ``Loader_Windows`` serve as loader stubs. Upon startup, they retrieve the packed target executable from their embedded resources, unpack it in memory, and execute it.  
+Both ``Loader_Console`` and ``Loader_Windows`` serve as loader stubs. Upon startup, they retrieve the packed target executable from their embedded resources (``-r`` option), or from ``.fpack`` section (``-s`` option), unpack it in memory, and execute it.  
 The loader logic is available at: https://github.com/Fatmike-GH/PELoader  
 
 - ``Loader_Console``: The loader stub for loading console applications.  
