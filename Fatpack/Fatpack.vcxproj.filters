@@ -231,5 +231,11 @@
     <ClInclude Include="Compessor\lzma\easylzma\decompress.h">
       <Filter>Compressor\lzma\easylzma</Filter>
     </ClInclude>
+    <ClInclude Include="CommandLine\Result.h">
+      <Filter>CommandLine</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandLine\Option.h">
+      <Filter>CommandLine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

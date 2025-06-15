@@ -146,6 +146,8 @@
     <ClInclude Include="..\Shared\ResourceLoader\ResourceLoader.h" />
     <ClInclude Include="BinaryFileWriter\BinaryFileWriter.h" />
     <ClInclude Include="CommandLine\CommandLine.h" />
+    <ClInclude Include="CommandLine\Option.h" />
+    <ClInclude Include="CommandLine\Result.h" />
     <ClInclude Include="Compessor\Compressor.h" />
     <ClInclude Include="Compessor\lzma\common_internal.h" />
     <ClInclude Include="Compessor\lzma\easylzma\common.h" />

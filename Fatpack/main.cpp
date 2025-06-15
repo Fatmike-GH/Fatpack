@@ -8,14 +8,7 @@
 #include "..\Shared\BinaryFileReader\BinaryFileReader.h"
 #include "..\Shared\ResourceLoader\ResourceLoader.h"
 
-enum OPTION
-{
-  RESOURCE = 0,
-  SECTION = 1
-};
-
-bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName, OPTION& option);
-void ShowHelp();
+bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName, CommandLine::OPTION& option);
 bool ReadFile(LPWSTR fileName, PEFile::PEFile& peFile);
 bool IsInputFileSupported(PEFile::PEFile& inputFile);
 bool LoadPELoaderFromResource(PEFile::PEFile& peLoader, bool useConsoleStub);
@@ -33,11 +26,11 @@ int main()
 {
   LPWSTR inputFileName = nullptr;
   LPWSTR outputFileName = nullptr;
-  OPTION option = OPTION::RESOURCE;
+  CommandLine::OPTION option = CommandLine::OPTION::RESOURCE;
   if (!GetCommandLine(inputFileName, outputFileName, option)) return 0;
 
   Console::Console console;
-  if (option == OPTION::RESOURCE)
+  if (option == CommandLine::OPTION::RESOURCE)
   {
     console.WriteLine(L"Using option -r, --resource");
     PackIntoResource(inputFileName, outputFileName);
@@ -89,60 +82,25 @@ void PackIntoLastSection(LPWSTR inputFileName, LPWSTR outputFileName)
   console.WriteLine(L"Packing finished.");
 }
 
-bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName, OPTION& option)
+bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName, CommandLine::OPTION& option)
 {
   Console::Console console;
   CommandLine::CommandLine commandLine;
 
-  int argc = 0;
-  auto args = commandLine.GetCommandLine();
-  auto argv = commandLine.CommandLineToArgv(args, argc);
-  if (argc < 3 || argc > 4)
+  auto result = commandLine.Parse();
+  if (!result.IsValid)
   {
-    ShowHelp();
+    console.WriteError(result.ErrorMessage);
+    console.ShowHelp();
     return false;
   }
-
-  inputFileName = argv[1];
-  outputFileName = argv[2];
-  if (wcscmp(inputFileName, outputFileName) == 0)
+  else
   {
-    console.WriteLine(L"inputfile may not be the same as outputfile");
-    return false;
-  }
-
-  LPWSTR optionName = argc == 4 ? argv[3] : nullptr;
-  if (optionName != nullptr)
-  {
-    if (wcscmp(optionName, L"-r") == 0 || wcscmp(optionName, L"--resource") == 0)
-    {
-      option = OPTION::RESOURCE;
-    }
-    else if (wcscmp(optionName, L"-s") == 0 || wcscmp(optionName, L"--section") == 0)
-    {
-      option = OPTION::SECTION;
-    }
-    else
-    {
-      ShowHelp();
-      return false;
-    }
-  } 
-
-  return true;
-}
-
-void ShowHelp()
-{
-  Console::Console console;
-  console.WriteLine(L"\n..::[Fatmike 2025]::..\n");
-  console.WriteLine(L"Version: Fatpack v1.5.0");
-  console.WriteLine(L"Usage:\t fatpack.exe inputfile.exe outputfile.exe [OPTIONS]\n");
-  console.WriteLine(L"[OPTIONS]");
-  console.WriteLine(L"-r, --resource\t Packs inputfile.exe as resource (DEFAULT)");
-  console.WriteLine(L"-s, --section\t Packs inputfile.exe as section (EXPERIMENTAL)");
-  console.WriteLine(L"\nNOTES");
-  console.WriteLine(L"-s, --section is the preferred option as it requires less memory at runtime.\nHowever, it may cause issues with certain targets in specific cases.");
+    inputFileName = result.InputFileName;
+    outputFileName = result.OutputFileName;
+    option = result.Option;
+    return true;
+  }  
 }
 
 bool ReadFile(LPWSTR fileName, PEFile::PEFile& peFile)
@@ -151,7 +109,7 @@ bool ReadFile(LPWSTR fileName, PEFile::PEFile& peFile)
   if (binaryFileReader.GetBufferSize() == 0 || binaryFileReader.GetBuffer() == nullptr)
   {
     Console::Console console;
-    console.WriteLine(L"Reading file failed.");
+    console.WriteError(L"Reading file failed.");
     return false;
   }
 
@@ -163,17 +121,17 @@ bool IsInputFileSupported(PEFile::PEFile& inputFile)
   Console::Console console;
   if (!inputFile.IsPEFile())
   {
-    console.WriteLine(L"inputfile is not a valid pe file.");
+    console.WriteError(L"inputfile is not a valid pe file.");
     return false;
   }
   if (!inputFile.Isx64())
   {
-    console.WriteLine(L"inputfile is not a x64 pe file.");
+    console.WriteError(L"inputfile is not a x64 pe file.");
     return false;
   }
   if (!inputFile.IsNative())
   {
-    console.WriteLine(L"inputfile is not a native pe file.");
+    console.WriteError(L"inputfile is not a native pe file.");
     return false;
   }
   return true;
@@ -199,7 +157,7 @@ bool LoadPELoaderFromResource(PEFile::PEFile& peLoader, bool useConsoleStub)
 
   if (peLoaderBuffer == nullptr || peLoaderSize == 0)
   {
-    console.WriteLine(L"Loading loader stub failed.");
+    console.WriteError(L"Loading loader stub failed.");
     return false;
   }
 
@@ -228,7 +186,7 @@ bool RebasePELoaderIfRequired(PEFile::PEFile& inputFile, PEFile::PEFile& peLoade
     }
     else
     {
-      console.WriteLine(L"Rebasing failed.");
+      console.WriteError(L"Rebasing failed.");
       return false;
     }
   }
@@ -245,7 +203,7 @@ bool RebasePELoaderToLastSection(PEFile::PEFile& inputFile, PEFile::PEFile& peLo
   uintptr_t alignedImageBase = PEFile::PEFile::AlignImageBase(newImageBase);
   if (!peLoader.Rebase(alignedImageBase))
   {
-    console.WriteLine(L"Rebasing failed.");
+    console.WriteError(L"Rebasing failed.");
     return false;
   }
 
@@ -272,7 +230,7 @@ bool SavePELoader(PEFile::PEFile& peLoader, LPWSTR outputFileName)
   BinaryFileWriter::BinaryFileWriter binaryFileWriter;
   if (!binaryFileWriter.WriteFile(outputFileName, peLoader.GetBuffer(), peLoader.GetBufferSize()))
   {
-    console.WriteLine(L"Saving loader stub to disk failed.");
+    console.WriteError(L"Saving loader stub to disk failed.");
     return false;
   }
   return true;
@@ -297,7 +255,7 @@ bool AppendResourcesToPELoader(LPWSTR inputFileName, LPWSTR outputFileName)
     console.WriteLine(L"Manifest found. Adding manifest...");
     if (!manifestExtractor.AddManifestResourcesToTarget(outputFileName))
     {
-      console.WriteLine(L"Adding manifest failed.");
+      console.WriteError(L"Adding manifest failed.");
       return false;
     }
     else
@@ -318,7 +276,7 @@ bool CompressAndAppendToPELoaderAsResource(PEFile::PEFile& inputFile, LPWSTR out
   Compressor::Compressor compressor;
   if (!compressor.Compress(inputFile.GetBuffer(), inputFile.GetBufferSize(), &compressed, &compressedSize))
   {
-    console.WriteLine(L"Compressing failed.");
+    console.WriteError(L"Compressing failed.");
     return false;
   }
 
@@ -326,17 +284,17 @@ bool CompressAndAppendToPELoaderAsResource(PEFile::PEFile& inputFile, LPWSTR out
   HANDLE updateHandle = BeginUpdateResourceW(outputFileName, FALSE);
   if (updateHandle == nullptr)
   {
-    console.WriteLine(L"Appending compressed data failed.");
+    console.WriteError(L"Appending compressed data failed.");
     return false;
   }
   if (UpdateResource(updateHandle, RT_RCDATA, L"FPACK", MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), compressed, (DWORD)compressedSize) == FALSE)
   {
-    console.WriteLine(L"Appending compressed data failed.");
+    console.WriteError(L"Appending compressed data failed.");
     return false;
   }
   if (EndUpdateResource(updateHandle, FALSE) == FALSE)
   {
-    console.WriteLine(L"Appending compressed data failed.");
+    console.WriteError(L"Appending compressed data failed.");
     return false;
   }
 
@@ -355,7 +313,7 @@ bool CompressAndAppendToPELoaderIntoLastSection(PEFile::PEFile& inputFile, PEFil
   Compressor::Compressor compressor;
   if (!compressor.Compress(inputFile.GetBuffer(), inputFile.GetBufferSize(), &compressed, &compressedSize))
   {
-    console.WriteLine(L"Compressing failed.");
+    console.WriteError(L"Compressing failed.");
     return false;
   }
 
@@ -372,7 +330,7 @@ bool CompressAndAppendToPELoaderIntoLastSection(PEFile::PEFile& inputFile, PEFil
 
   if (!peLoader.Resize(newBufferSize))
   {
-    console.WriteLine(L"Appending compressed data failed.");
+    console.WriteError(L"Appending compressed data failed.");
     return false;
   }
   else

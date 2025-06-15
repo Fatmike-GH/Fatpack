@@ -10,5 +10,7 @@ namespace Console
     ~Console();
 
     void WriteLine(const wchar_t* text);
+    void WriteError(const wchar_t* text);
+    void ShowHelp();
   };
 }
