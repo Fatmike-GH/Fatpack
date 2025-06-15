@@ -32,7 +32,33 @@ namespace PEFile
     return true;
   }
 
-  ULONGLONG PEFile::GetImageBase()
+  bool PEFile::Resize(DWORD size)
+  {
+    if (size == 0 || _buffer == nullptr || _bufferSize == 0) return false;
+
+    BYTE* buffer = new BYTE[size];
+    memset(buffer, 0, size);
+    if (size <= _bufferSize)
+    {
+      memcpy(buffer, _buffer, size);
+    }
+    else
+    {
+      memcpy(buffer, _buffer, _bufferSize);
+    }
+
+    DeleteBuffer();
+    _bufferSize = size;
+    _buffer = buffer;
+
+    _PIMAGE_DOS_HEADER = (PIMAGE_DOS_HEADER)_buffer;
+    _PIMAGE_NT_HEADERS = (PIMAGE_NT_HEADERS)(_buffer + _PIMAGE_DOS_HEADER->e_lfanew);
+    _PIMAGE_SECTION_HEADER = IMAGE_FIRST_SECTION(_PIMAGE_NT_HEADERS);
+
+    return true;
+  }
+
+  uintptr_t PEFile::GetImageBase()
   {
     if (_buffer == nullptr || _bufferSize == 0) return 0;
     return _PIMAGE_NT_HEADERS->OptionalHeader.ImageBase;
@@ -69,6 +95,64 @@ namespace PEFile
     if (_buffer == nullptr || _bufferSize == 0) return false;
     if (!Isx64()) return false;
     return (_PIMAGE_NT_HEADERS->OptionalHeader.Subsystem == IMAGE_SUBSYSTEM_WINDOWS_CUI);
+  }
+
+  WORD PEFile::GetSectionCount()
+  {
+    return _PIMAGE_NT_HEADERS->FileHeader.NumberOfSections;
+  }
+
+  PIMAGE_SECTION_HEADER PEFile::GetSectionHeader(WORD index)
+  {
+    return &_PIMAGE_SECTION_HEADER[index];
+  }
+
+  uintptr_t PEFile::AlignImageBase(uintptr_t imageBase)
+  {
+    ULONGLONG result = 0;
+    const DWORD imageBaseAlignment = 0x00010000; // ImageBase must be a multiple of 64 K
+
+    if (imageBase % imageBaseAlignment == 0)
+    {
+      result = imageBase;
+    }
+    else
+    {
+      result = imageBaseAlignment * ((imageBase / imageBaseAlignment)); // Round down
+    }
+    return result;
+  }
+
+  DWORD PEFile::AlignSection(DWORD value)
+  {
+    DWORD result = 0;
+    const DWORD alignment = _PIMAGE_NT_HEADERS->OptionalHeader.SectionAlignment;
+
+    if (value % alignment == 0)
+    {
+      result = value;
+    }
+    else
+    {
+      result = alignment * ((value / alignment) + 1); // Round up
+    }
+    return result;
+  }
+
+  DWORD PEFile::AlignFile(DWORD value)
+  {
+    DWORD result = 0;
+    const DWORD alignment = _PIMAGE_NT_HEADERS->OptionalHeader.FileAlignment;
+
+    if (value % alignment == 0)
+    {
+      result = value;
+    }
+    else
+    {
+      result = alignment * ((value / alignment) + 1); // Round up
+    }
+    return result;
   }
 
   bool PEFile::IntersectsWith(PEFile& other)

@@ -10,6 +10,13 @@ namespace ResourceLoader
   {
   }
 
+  HRSRC ResourceLoader::FindResource(LPCWSTR resourceName, LPCWSTR resourceType)
+  {
+    HMODULE moduleHandle = ::GetModuleHandle(nullptr);
+    HRSRC resourceHandle = ::FindResource(moduleHandle, resourceName, resourceType);
+    return resourceHandle;
+  }
+
   BYTE* ResourceLoader::LoadResource(LPCWSTR resourceName, LPCWSTR resourceType, DWORD& resourceSize)
   {
     resourceSize = 0;

@@ -9,6 +9,7 @@ namespace ResourceLoader
     ResourceLoader();
     ~ResourceLoader();
 
+    HRSRC FindResource(LPCWSTR resourceName, LPCWSTR resourceType);
     BYTE* LoadResource(LPCWSTR resourceName, LPCWSTR resourceType, DWORD& resourceSize);
     void Free(BYTE* resourceBuffer);
   };

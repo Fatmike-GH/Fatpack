@@ -7,7 +7,7 @@ namespace BinaryFileReader
     _buffer = nullptr;
     _bufferSize = 0;
 
-    HANDLE fileHandle = CreateFileW(fileName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE fileHandle = CreateFileW(fileName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
     if (fileHandle == INVALID_HANDLE_VALUE)
     {
       Cleanup();

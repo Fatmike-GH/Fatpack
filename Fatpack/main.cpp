@@ -1,86 +1,161 @@
-#include "Console\Console.h"
-#include "CommandLine\CommandLine.h"
-#include "PEFile\PEFile.h"
-#include "..\Shared\BinaryFileReader\BinaryFileReader.h"
 #include "BinaryFileWriter\BinaryFileWriter.h"
+#include "Compessor\Compressor.h"
+#include "CommandLine\CommandLine.h"
+#include "Console\Console.h"
 #include "IconExtractor\IconExtractor.h"
 #include "ManifestExtractor\ManifestExtractor.h"
+#include "PEFile\PEFile.h"
+#include "..\Shared\BinaryFileReader\BinaryFileReader.h"
 #include "..\Shared\ResourceLoader\ResourceLoader.h"
-#include "Compessor\Compressor.h"
 
-bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName);
-bool ReadInputFile(LPWSTR inputFileName, PEFile::PEFile& inputFile);
+enum OPTION
+{
+  RESOURCE = 0,
+  SECTION = 1
+};
+
+bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName, OPTION& option);
+void ShowHelp();
+bool ReadFile(LPWSTR fileName, PEFile::PEFile& peFile);
 bool IsInputFileSupported(PEFile::PEFile& inputFile);
 bool LoadPELoaderFromResource(PEFile::PEFile& peLoader, bool useConsoleStub);
-bool RebasePELoader(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader);
+bool RebasePELoaderIfRequired(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader);
+bool RebasePELoaderToLastSection(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader);
 bool SavePELoader(PEFile::PEFile& peLoader, LPWSTR outputFileName);
 bool AppendResourcesToPELoader(LPWSTR inputFileName, LPWSTR outputFileName);
-bool CompressAndAppendToPELoader(PEFile::PEFile& inputFile, LPWSTR outputFileName);
+bool CompressAndAppendToPELoaderAsResource(PEFile::PEFile& inputFile, LPWSTR outputFileName);
+bool CompressAndAppendToPELoaderIntoLastSection(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader);
+
+void PackIntoResource(LPWSTR inputFileName, LPWSTR outputFileName);
+void PackIntoLastSection(LPWSTR inputFileName, LPWSTR outputFileName);
 
 int main()
 {
   LPWSTR inputFileName = nullptr;
   LPWSTR outputFileName = nullptr;
-  if (!GetCommandLine(inputFileName, outputFileName)) return 0;
+  OPTION option = OPTION::RESOURCE;
+  if (!GetCommandLine(inputFileName, outputFileName, option)) return 0;
 
-  PEFile::PEFile inputFile;
-  if (!ReadInputFile(inputFileName, inputFile)) return 0;
-  if (!IsInputFileSupported(inputFile)) return 0;
-
-  PEFile::PEFile peLoader;
-  if (!LoadPELoaderFromResource(peLoader, inputFile.IsConsole())) return 0;
-  if (!RebasePELoader(inputFile, peLoader)) return 0;
-  if (!SavePELoader(peLoader, outputFileName)) return 0;
-
-  if (!AppendResourcesToPELoader(inputFileName, outputFileName)) return 0;
-  if (!CompressAndAppendToPELoader(inputFile, outputFileName)) return 0;
-  
   Console::Console console;
-  console.WriteLine(L"Packing finished.");
-
+  if (option == OPTION::RESOURCE)
+  {
+    console.WriteLine(L"Using option -r, --resource");
+    PackIntoResource(inputFileName, outputFileName);
+  }
+  else
+  {
+    console.WriteLine(L"Using option -s, --section");
+    PackIntoLastSection(inputFileName, outputFileName);
+  }
   return 0;
 }
 
-bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName)
+void PackIntoResource(LPWSTR inputFileName, LPWSTR outputFileName)
+{
+  PEFile::PEFile inputFile;
+  if (!ReadFile(inputFileName, inputFile)) return;
+  if (!IsInputFileSupported(inputFile)) return;
+
+  PEFile::PEFile peLoader;
+  if (!LoadPELoaderFromResource(peLoader, inputFile.IsConsole())) return;
+  if (!RebasePELoaderIfRequired(inputFile, peLoader)) return;
+  if (!SavePELoader(peLoader, outputFileName)) return;
+
+  if (!AppendResourcesToPELoader(inputFileName, outputFileName)) return;
+  if (!CompressAndAppendToPELoaderAsResource(inputFile, outputFileName)) return;
+
+  Console::Console console;
+  console.WriteLine(L"Packing finished.");
+}
+
+// Experimental approach: Requirement: .reloc section is last section of loader stub
+void PackIntoLastSection(LPWSTR inputFileName, LPWSTR outputFileName)
+{
+  PEFile::PEFile inputFile;
+  if (!ReadFile(inputFileName, inputFile)) return;
+  if (!IsInputFileSupported(inputFile)) return;
+
+  PEFile::PEFile peLoader;
+  if (!LoadPELoaderFromResource(peLoader, inputFile.IsConsole())) return;
+  if (!SavePELoader(peLoader, outputFileName)) return;
+  if (!AppendResourcesToPELoader(inputFileName, outputFileName)) return;
+
+  if (!ReadFile(outputFileName, peLoader)) return;
+  if (!RebasePELoaderToLastSection(inputFile, peLoader)) return;
+  if (!CompressAndAppendToPELoaderIntoLastSection(inputFile, peLoader)) return;
+  if (!SavePELoader(peLoader, outputFileName)) return;
+
+  Console::Console console;
+  console.WriteLine(L"Packing finished.");
+}
+
+bool GetCommandLine(LPWSTR& inputFileName, LPWSTR& outputFileName, OPTION& option)
 {
   Console::Console console;
   CommandLine::CommandLine commandLine;
 
-  auto args = commandLine.GetCommandLine();
-
   int argc = 0;
+  auto args = commandLine.GetCommandLine();
   auto argv = commandLine.CommandLineToArgv(args, argc);
-  if (argc != 3)
+  if (argc < 3 || argc > 4)
   {
-    console.WriteLine(L"\n..::[Fatmike 2025]::..\n");
-    console.WriteLine(L"Version: Fatpack v1.4.1");
-    console.WriteLine(L"Usage:\t fatpack.exe inputfile.exe outputfile.exe");
+    ShowHelp();
     return false;
   }
 
   inputFileName = argv[1];
   outputFileName = argv[2];
-
   if (wcscmp(inputFileName, outputFileName) == 0)
   {
     console.WriteLine(L"inputfile may not be the same as outputfile");
     return false;
   }
 
+  LPWSTR optionName = argc == 4 ? argv[3] : nullptr;
+  if (optionName != nullptr)
+  {
+    if (wcscmp(optionName, L"-r") == 0 || wcscmp(optionName, L"--resource") == 0)
+    {
+      option = OPTION::RESOURCE;
+    }
+    else if (wcscmp(optionName, L"-s") == 0 || wcscmp(optionName, L"--section") == 0)
+    {
+      option = OPTION::SECTION;
+    }
+    else
+    {
+      ShowHelp();
+      return false;
+    }
+  } 
+
   return true;
 }
 
-bool ReadInputFile(LPWSTR inputFileName, PEFile::PEFile& inputFile)
+void ShowHelp()
 {
-  BinaryFileReader::BinaryFileReader binaryFileReader(inputFileName);
+  Console::Console console;
+  console.WriteLine(L"\n..::[Fatmike 2025]::..\n");
+  console.WriteLine(L"Version: Fatpack v1.5.0");
+  console.WriteLine(L"Usage:\t fatpack.exe inputfile.exe outputfile.exe [OPTIONS]\n");
+  console.WriteLine(L"[OPTIONS]");
+  console.WriteLine(L"-r, --resource\t Packs inputfile.exe as resource (DEFAULT)");
+  console.WriteLine(L"-s, --section\t Packs inputfile.exe as section (EXPERIMENTAL)");
+  console.WriteLine(L"\nNOTES");
+  console.WriteLine(L"-s, --section is the preferred option as it requires less memory at runtime.\nHowever, it may cause issues with certain targets in specific cases.");
+}
+
+bool ReadFile(LPWSTR fileName, PEFile::PEFile& peFile)
+{
+  BinaryFileReader::BinaryFileReader binaryFileReader(fileName);
   if (binaryFileReader.GetBufferSize() == 0 || binaryFileReader.GetBuffer() == nullptr)
   {
     Console::Console console;
-    console.WriteLine(L"Reading inputfile failed.");
+    console.WriteLine(L"Reading file failed.");
     return false;
   }
 
-  return inputFile.LoadFromBuffer(binaryFileReader.GetBuffer(), binaryFileReader.GetBufferSize());
+  return peFile.LoadFromBuffer(binaryFileReader.GetBuffer(), binaryFileReader.GetBufferSize());
 }
 
 bool IsInputFileSupported(PEFile::PEFile& inputFile)
@@ -138,7 +213,7 @@ bool LoadPELoaderFromResource(PEFile::PEFile& peLoader, bool useConsoleStub)
 // Rebasing the pe loader to the next possible image base 'behind' the target is not the way to go.
 // This calculated image base can still be occupied by stack, or by other loaded modules.
 // Therefore i keep ASLR activated, for better results
-bool RebasePELoader(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
+bool RebasePELoaderIfRequired(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
 {
   if (!inputFile.HasRelocationTable() && inputFile.IntersectsWith(peLoader))
   {
@@ -157,6 +232,35 @@ bool RebasePELoader(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
       return false;
     }
   }
+  return true;
+}
+
+bool RebasePELoaderToLastSection(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
+{
+  Console::Console console;
+
+  WORD lastIndex = peLoader.GetSectionCount() - 1;
+  PIMAGE_SECTION_HEADER lastSectionHeader = peLoader.GetSectionHeader(lastIndex);
+  uintptr_t newImageBase = inputFile.GetImageBase() - lastSectionHeader->VirtualAddress;
+  uintptr_t alignedImageBase = PEFile::PEFile::AlignImageBase(newImageBase);
+  if (!peLoader.Rebase(alignedImageBase))
+  {
+    console.WriteLine(L"Rebasing failed.");
+    return false;
+  }
+
+  PIMAGE_SECTION_HEADER previousSectionHeader = peLoader.GetSectionHeader(lastIndex - 1);
+  uintptr_t gap = newImageBase - alignedImageBase;
+  if (gap != 0)
+  {
+    previousSectionHeader->Misc.VirtualSize += gap;
+  }
+
+  lastSectionHeader->VirtualAddress = peLoader.AlignSection(previousSectionHeader->VirtualAddress + previousSectionHeader->Misc.VirtualSize);
+  lastSectionHeader->Misc.VirtualSize = peLoader.AlignSection(inputFile.GetSizeOfImage());
+  peLoader.NT_HEADERS()->OptionalHeader.SizeOfImage = peLoader.AlignSection(lastSectionHeader->VirtualAddress + lastSectionHeader->Misc.VirtualSize);
+
+  console.WriteLine(L"Rebasing finished.");
   return true;
 }
 
@@ -204,7 +308,7 @@ bool AppendResourcesToPELoader(LPWSTR inputFileName, LPWSTR outputFileName)
   return true;
 }
 
-bool CompressAndAppendToPELoader(PEFile::PEFile& inputFile, LPWSTR outputFileName)
+bool CompressAndAppendToPELoaderAsResource(PEFile::PEFile& inputFile, LPWSTR outputFileName)
 {
   Console::Console console;
 
@@ -225,7 +329,7 @@ bool CompressAndAppendToPELoader(PEFile::PEFile& inputFile, LPWSTR outputFileNam
     console.WriteLine(L"Appending compressed data failed.");
     return false;
   }
-  if (UpdateResource(updateHandle, RT_RCDATA, L"PACKED", MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), compressed, (DWORD)compressedSize) == FALSE)
+  if (UpdateResource(updateHandle, RT_RCDATA, L"FPACK", MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), compressed, (DWORD)compressedSize) == FALSE)
   {
     console.WriteLine(L"Appending compressed data failed.");
     return false;
@@ -236,6 +340,48 @@ bool CompressAndAppendToPELoader(PEFile::PEFile& inputFile, LPWSTR outputFileNam
     return false;
   }
 
+  compressor.Free(compressed);
+
+  return true;
+}
+
+bool CompressAndAppendToPELoaderIntoLastSection(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
+{
+  Console::Console console;
+
+  // Compress inputFile
+  BYTE* compressed = nullptr;
+  size_t compressedSize = 0;
+  Compressor::Compressor compressor;
+  if (!compressor.Compress(inputFile.GetBuffer(), inputFile.GetBufferSize(), &compressed, &compressedSize))
+  {
+    console.WriteLine(L"Compressing failed.");
+    return false;
+  }
+
+  WORD lastIndex = peLoader.GetSectionCount() - 1;
+  PIMAGE_SECTION_HEADER lastSection = peLoader.GetSectionHeader(lastIndex);
+
+  DWORD currentBufferSize = peLoader.GetBufferSize();
+  DWORD currentSectionRawSize = lastSection->SizeOfRawData;
+  DWORD newSectionRawSize = peLoader.AlignFile(compressedSize);
+  DWORD deltaSize = newSectionRawSize - currentSectionRawSize;
+
+  DWORD newBufferSize = currentBufferSize + deltaSize;
+  lastSection->SizeOfRawData = newSectionRawSize;
+
+  if (!peLoader.Resize(newBufferSize))
+  {
+    console.WriteLine(L"Appending compressed data failed.");
+    return false;
+  }
+  else
+  {
+    lastSection = peLoader.GetSectionHeader(lastIndex);
+    memcpy(peLoader.GetBuffer() + lastSection->PointerToRawData, compressed, compressedSize);
+    memcpy(lastSection->Name, ".fpack  ", 8);
+  }
+  
   compressor.Free(compressed);
 
   return true;

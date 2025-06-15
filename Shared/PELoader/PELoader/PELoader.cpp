@@ -15,12 +15,13 @@ namespace PELoader
   {
   }
 
-  LPVOID PELoader::LoadPE(TlsResolver* tlsResolver, LPVOID fileBuffer)
+  LPVOID PELoader::LoadPE(TlsResolver* tlsResolver, LPVOID fileBuffer, bool allocateVirtualMemory)
   {
     PEFile pefile(fileBuffer);
-    LPVOID imageBase = MapSections(&pefile);
+    LPVOID imageBase = MapSections(&pefile, allocateVirtualMemory);
 
     PEImage peImage(imageBase); // Using the mapped pe file at actual imageBase
+
     ApplyRelocations(&peImage, pefile.NT_HEADERS()->OptionalHeader.ImageBase);
     UpdatePEB(&peImage);
     InitializeTlsIndex(tlsResolver, &peImage);
@@ -34,26 +35,35 @@ namespace PELoader
     return imageBase;
   }
 
-  LPVOID PELoader::MapSections(PEFile* pefile)
+  LPVOID PELoader::MapSections(PEFile* pefile, bool allocateVirtualMemory)
   {
-    LPVOID imageBase = VirtualAlloc((LPVOID)pefile->NT_HEADERS()->OptionalHeader.ImageBase, pefile->NT_HEADERS()->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-    if (imageBase == nullptr)
-    {
-      imageBase = VirtualAlloc(nullptr, pefile->NT_HEADERS()->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-      if (imageBase == nullptr) return nullptr;
-    }
+    LPVOID imageBase = allocateVirtualMemory ? AllocateVirtualMemory(pefile) : (LPVOID)pefile->NT_HEADERS()->OptionalHeader.ImageBase;
+    if (imageBase == nullptr) return nullptr;
 
+    MapSections(pefile, imageBase);
+
+    return imageBase;
+  }
+
+  void PELoader::MapSections(PEFile* pefile, LPVOID imageBase)
+  {
     memcpy(imageBase, pefile->GetBuffer(), pefile->NT_HEADERS()->OptionalHeader.SizeOfHeaders);
-
     for (int i = 0; i < pefile->NT_HEADERS()->FileHeader.NumberOfSections; i++)
     {
       LPVOID sectionDest = (BYTE*)imageBase + pefile->SECTION_HEADER()[i].VirtualAddress;
       LPVOID sectionSrc = pefile->GetBuffer() + pefile->SECTION_HEADER()[i].PointerToRawData;
       SIZE_T sectionSize = min(pefile->SECTION_HEADER()[i].SizeOfRawData, pefile->SECTION_HEADER()[i].Misc.VirtualSize);
-
       memcpy(sectionDest, sectionSrc, sectionSize);
     }
+  }
 
+  LPVOID PELoader::AllocateVirtualMemory(PEFile* pefile)
+  {
+    LPVOID imageBase = VirtualAlloc((LPVOID)pefile->NT_HEADERS()->OptionalHeader.ImageBase, pefile->NT_HEADERS()->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    if (imageBase == nullptr)
+    {
+      imageBase = VirtualAlloc(nullptr, pefile->NT_HEADERS()->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    }
     return imageBase;
   }
 

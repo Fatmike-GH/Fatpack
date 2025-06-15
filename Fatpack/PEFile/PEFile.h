@@ -10,6 +10,8 @@ namespace PEFile
     ~PEFile();
 
     bool LoadFromBuffer(BYTE* fileBuffer, DWORD size);
+    bool Resize(DWORD size);
+
     DWORD GetBufferSize() { return _bufferSize; }
     BYTE* GetBuffer() { return _buffer; }
 
@@ -17,13 +19,21 @@ namespace PEFile
     const PIMAGE_NT_HEADERS NT_HEADERS() { return _PIMAGE_NT_HEADERS; }
     const PIMAGE_SECTION_HEADER SECTION_HEADER() { return _PIMAGE_SECTION_HEADER; }
 
-    ULONGLONG GetImageBase();
+    uintptr_t GetImageBase();
     DWORD GetSizeOfImage();
 
     bool IsPEFile();    
     bool Isx64();
     bool IsNative();
     bool IsConsole();
+
+
+    WORD GetSectionCount();
+    PIMAGE_SECTION_HEADER GetSectionHeader(WORD index);
+
+    static uintptr_t AlignImageBase(uintptr_t imageBase);
+    DWORD AlignSection(DWORD value);
+    DWORD AlignFile(DWORD value);
 
     bool IntersectsWith(PEFile& other);
     bool HasRelocationTable();
