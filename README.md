@@ -10,7 +10,10 @@ A practical application of my PE loader: https://github.com/Fatmike-GH/PELoader
 
 ## Usage
 
-``Fatpack.exe inputfile.exe outputfile.exe``  
+``Fatpack.exe inputfile.exe outputfile.exe [OPTIONS]``  
+``[OPTIONS]``  
+``-r, --resource: Packs inputfile.exe as resource (DEFAULT)``  
+``-s, --section  : Packs inputfile.exe as section (EXPERIMENTAL)``
 
 ## Features
 
@@ -22,6 +25,9 @@ A practical application of my PE loader: https://github.com/Fatmike-GH/PELoader
   - Therefore supports Rust- and Delphi exectuables for example  
 - No CRT usage in Fatpack.exe and Stubs (WinAPI only) and therefore no C/C++ redistributables are required  
 - Icon extraction
+- Packing options
+  - Resource Packing : The packed target is embedded as a resource in the loader stub, including rebasing if necessary.
+  - Section Packing : The packed target is appended as section within the loader stub.
 
 ### Technical Features  
 
@@ -37,7 +43,6 @@ A practical application of my PE loader: https://github.com/Fatmike-GH/PELoader
     - DLL_THREAD_DETACH  
     - DLL_PROCESS_DETACH  
   - TLS Data
-- Rebasing if necessary
 - Manifest extraction (required, if specfic module versions of the target executable are specified)  
 
 ## Solution Overview
@@ -78,9 +83,16 @@ The console application (``Fatpack.exe``) is used by the user to package their t
 - Extracting the icon from the target executable and embedding it into the selected loader stub.  
 - Extracting and embedding the application manifest from the target executable. This step is essential, as the manifest may specify specific module versions required for correct execution.  
 - Compressing the target executable using the LZMA algorithm and appending it to the loader stub.  
+- Depending on the selected option (``--resource`` or ``--section``), the packed target is appended to the loader stub in different ways:  
+  - Option ``--resource``  
+  ![image](Images/Concept_01.PNG)  
+  The packed target is appended to the loader stub as a resource. It remains in memory, while the unpacked target is mapped to a new memory location (allocated using *VirtualAlloc*) and executed from there.  
 
-![image](Images/Concept.PNG)
-
+  - Option ``--section``  
+  ![image](Images/Concept_02.PNG)  
+  The loader stub is rebased so that its ``.reloc`` section aligns with the image base of the target executable. The virtual size of the ``.reloc`` section is adjusted to match the image size of the unpacked target, allowing it to fit entirely within this section at runtime after unpacking. As a result, no additional memory allocation is necessary. As a final step, the ``.reloc`` section is renamed to ``.fpack``.
+  >This is the preferred option as it requires less memory at runtime. However, it may cause >issues with certain targets in specific cases.
+  
 ## Fatpack vs UPX 5.0.1 
 
 | Target size 	| UPX     	| UPX -9  	| Fatpack 	| Target info                                   	|
