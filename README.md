@@ -91,7 +91,7 @@ The console application (``Fatpack.exe``) is used by the user to package their t
   - Option ``--section``  
   ![image](Images/Concept_02.PNG)  
   The loader stub is rebased so that its ``.reloc`` section aligns with the image base of the target executable. The virtual size of the ``.reloc`` section is adjusted to match the image size of the unpacked target, allowing it to fit entirely within this section at runtime after unpacking. As a result, no additional memory allocation is necessary. As a final step, the ``.reloc`` section is renamed to ``.fpack``.
-  >This is the preferred option as it requires less memory at runtime. However, it may cause >issues with certain targets in specific cases.
+  >This is the preferred option as it requires less memory at runtime. However, it may cause issues with certain targets in specific cases.  
   
 ## Fatpack vs UPX 5.0.1 
 
