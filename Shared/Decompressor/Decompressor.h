@@ -10,6 +10,5 @@ namespace Decompressor
     ~Decompressor();
 
     bool Decompress(BYTE* source, size_t sourceLength, BYTE** decompressed, size_t* compressedSize);
-    void Free(BYTE* decompressed);
   };
 }

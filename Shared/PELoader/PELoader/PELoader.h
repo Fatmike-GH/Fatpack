@@ -17,12 +17,11 @@ namespace PELoader
     PELoader();
     ~PELoader();
 
-    LPVOID LoadPE(TlsResolver* tlsResolver, LPVOID fileBuffer, bool allocateVirtualMemory);
+    LPVOID LoadPE(PEFile* pefile, TlsResolver* tlsResolver, LPVOID allocatedImageBase);
 
   private:
-    LPVOID MapSections(PEFile* pefile, bool allocateVirtualMemory);
-    void MapSections(PEFile* pefile, LPVOID imageBase);
     LPVOID AllocateVirtualMemory(PEFile* pefile);
+    void MapSections(PEFile* pefile, LPVOID allocatedImageBase);    
     void ApplyRelocations(PEImage* peImage, ULONGLONG originalImageBase);
     void UpdatePEB(PEImage* peImage);
     void InitializeTlsIndex(TlsResolver* tlsResolver, PEImage* peImage);

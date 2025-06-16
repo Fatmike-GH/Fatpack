@@ -3,6 +3,7 @@
 #include "..\Decompressor\Decompressor.h"
 #include "..\PELoader\PELoader\PELoader.h"
 #include "..\PELoader\PELoader\PEImage.h"
+#include "..\PELoader\PELoader\PEFile.h"
 #include "..\PELoader\PELoader\TlsResolver.h"
 
 namespace PELoaderStub
@@ -17,65 +18,81 @@ namespace PELoaderStub
 
   PELoader::PEImage* PELoaderStub::Load(PELoader::TlsResolver* tlsResolver)
   {
-    ResourceLoader::ResourceLoader resourceLoader;
-
-    HRSRC resourceHandle = resourceLoader.FindResource(L"FPACK", RT_RCDATA);
-    if (resourceHandle != nullptr)
-    {
-      return LoadFromResource(tlsResolver, &resourceLoader);
-    }
-    else
-    {
-      return LoadFromSection(tlsResolver);
-    }
+    return IsResourceAvailable() ? LoadFromResource(tlsResolver) : LoadFromSection(tlsResolver);
   }
 
-  PELoader::PEImage* PELoaderStub::LoadFromResource(PELoader::TlsResolver* tlsResolver, ResourceLoader::ResourceLoader* resourceLoader)
+  PELoader::PEImage* PELoaderStub::LoadFromResource(PELoader::TlsResolver* tlsResolver)
   {
-    // Load packed target from resource
-    DWORD targetSize = 0;
-    BYTE* targetBuffer = resourceLoader->LoadResource(L"FPACK", RT_RCDATA, targetSize);
-    if (targetBuffer == nullptr || targetSize == 0) return 0;
+    DWORD compressedSize = 0;
+    BYTE* compressedData = GetCompressedDataFromResource(compressedSize);
+    if (!compressedData || compressedSize == 0) return nullptr;
 
-    // Decompress target
     size_t decompressedSize = 0;
-    BYTE* decompressed = NULL;
-    Decompressor::Decompressor decompressor;
-    decompressor.Decompress(targetBuffer, targetSize, &decompressed, &decompressedSize);
-    resourceLoader->Free(targetBuffer);
+    BYTE* decompressedData = Decompress(compressedData, compressedSize, decompressedSize);
+    delete[] compressedData;
 
-    // Load target
-    PELoader::PELoader peLoader;
-    LPVOID imageBase = peLoader.LoadPE(tlsResolver, (LPVOID)decompressed, true);
-    decompressor.Free(decompressed);
-
-    return new PELoader::PEImage(imageBase);
+    return CreatePEImageFromMemory(decompressedData, tlsResolver);
   }
 
   PELoader::PEImage* PELoaderStub::LoadFromSection(PELoader::TlsResolver* tlsResolver)
   {
-    // Load packed target from last section (.reloc)
-    PELoader::PEImage self(GetModuleHandle(nullptr));
-    WORD lastSectionIndex = self.NT_HEADERS()->FileHeader.NumberOfSections - 1;
-    PIMAGE_SECTION_HEADER lastSectionHeader = &self.SECTION_HEADER()[lastSectionIndex];
+    DWORD rawSize = 0, virtualSize = 0;
+    BYTE* sectionBase = GetLastSection(rawSize, virtualSize);
+    if (!sectionBase || rawSize == 0) return nullptr;
 
-    BYTE* targetBuffer = (BYTE*)self.GetImageBase() + lastSectionHeader->VirtualAddress;
-    DWORD targetSize = lastSectionHeader->SizeOfRawData;
-    DWORD oldProtect = 0;
-    VirtualProtect(targetBuffer, lastSectionHeader->Misc.VirtualSize, PAGE_EXECUTE_READWRITE, &oldProtect);
-
-    // Decompress target
     size_t decompressedSize = 0;
-    BYTE* decompressed = NULL;
+    BYTE* decompressedData = Decompress(sectionBase, rawSize, decompressedSize);
+    SecureZeroMemory(sectionBase, virtualSize);
+
+    return CreatePEImageFromMemory(decompressedData, tlsResolver, sectionBase);
+  }
+
+  bool PELoaderStub::IsResourceAvailable()
+  {
+    ResourceLoader::ResourceLoader resourceLoader;
+    return resourceLoader.FindResource(L"FPACK", RT_RCDATA) != nullptr;
+  }
+
+  BYTE* PELoaderStub::GetCompressedDataFromResource(DWORD& compressedSize)
+  {
+    ResourceLoader::ResourceLoader resourceLoader;
+    return resourceLoader.LoadResource(L"FPACK", RT_RCDATA, compressedSize);
+  }
+
+  BYTE* PELoaderStub::GetLastSection(DWORD& rawSize, DWORD& virtualSize)
+  {
+    PELoader::PEImage self(GetModuleHandle(nullptr));
+    WORD lastSectionIndex = self.GetNumberOfSections() - 1;
+    PIMAGE_SECTION_HEADER lastSectionHeader = self.GetSectionHeader(lastSectionIndex);
+
+    BYTE* sectionStart = (BYTE*)self.GetImageBase() + lastSectionHeader->VirtualAddress;
+    rawSize = lastSectionHeader->SizeOfRawData;
+    virtualSize = lastSectionHeader->Misc.VirtualSize;
+
+    DWORD oldProtect = 0;
+    VirtualProtect(sectionStart, virtualSize, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+    return sectionStart;
+  }
+
+  BYTE* PELoaderStub::Decompress(BYTE* compressedData, DWORD compressedSize, size_t& decompressedSize)
+  {
+    BYTE* decompressedData = nullptr;
     Decompressor::Decompressor decompressor;
-    decompressor.Decompress(targetBuffer, targetSize, &decompressed, &decompressedSize);
-    memset(targetBuffer, 0, lastSectionHeader->Misc.VirtualSize);
+    decompressor.Decompress(compressedData, compressedSize, &decompressedData, &decompressedSize);
+    return decompressedData;
+  }
 
-    // Load target
+  PELoader::PEImage* PELoaderStub::CreatePEImageFromMemory(BYTE* peFileBuffer, PELoader::TlsResolver* tlsResolver, LPVOID allocatedImageBase /*= nullptr*/)
+  {
+    if (!peFileBuffer) return nullptr;
+
     PELoader::PELoader peLoader;
-    LPVOID imageBase = peLoader.LoadPE(tlsResolver, (LPVOID)decompressed, false);
-    decompressor.Free(decompressed);
+    PELoader::PEFile peFile(peFileBuffer);
 
-    return new PELoader::PEImage(imageBase);
+    allocatedImageBase = peLoader.LoadPE(&peFile, tlsResolver, allocatedImageBase);
+
+    delete[] peFileBuffer;
+    return new PELoader::PEImage(allocatedImageBase);
   }
 }

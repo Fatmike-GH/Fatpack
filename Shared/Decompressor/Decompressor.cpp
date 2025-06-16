@@ -16,9 +16,4 @@ namespace Decompressor
   {
     return (tinyLzmaDecompress(source, sourceLength, decompressed, uncompressedSize) == 0);
   }
-
-  void Decompressor::Free(BYTE* decompressed)
-  {
-    free(decompressed);
-  }
 }

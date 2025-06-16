@@ -23,7 +23,16 @@ namespace PELoaderStub
     PELoader::PEImage* Load(PELoader::TlsResolver* tlsResolver);
 
   private:
-    PELoader::PEImage* LoadFromResource(PELoader::TlsResolver* tlsResolver, ResourceLoader::ResourceLoader* resourceLoader);
+
+    bool IsResourceAvailable();
+
+    PELoader::PEImage* LoadFromResource(PELoader::TlsResolver* tlsResolver);
     PELoader::PEImage* LoadFromSection(PELoader::TlsResolver* tlsResolver);
+
+    BYTE* GetCompressedDataFromResource(DWORD& compressedSize);
+    BYTE* GetLastSection(DWORD& rawSize, DWORD& virtualSize);
+
+    BYTE* Decompress(BYTE* compressedData, DWORD compressedSize, size_t& decompressedSize);
+    PELoader::PEImage* CreatePEImageFromMemory(BYTE* peFileBuffer, PELoader::TlsResolver* tlsResolver, LPVOID allocatedImageBase = nullptr);
   };
 }

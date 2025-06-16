@@ -14,6 +14,7 @@ namespace PELoader
     const PIMAGE_SECTION_HEADER SECTION_HEADER() { return _PIMAGE_SECTION_HEADER; }
 
     BYTE* GetBuffer() { return _buffer; }
+    uintptr_t GetImageBase() { return _PIMAGE_NT_HEADERS->OptionalHeader.ImageBase; }
 
   private:
     BYTE* _buffer;

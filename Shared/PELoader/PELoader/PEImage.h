@@ -12,8 +12,12 @@ namespace PELoader
     const PIMAGE_DOS_HEADER DOS_HEADER() { return _PIMAGE_DOS_HEADER; }
     const PIMAGE_NT_HEADERS NT_HEADERS() { return _PIMAGE_NT_HEADERS; }
     const PIMAGE_SECTION_HEADER SECTION_HEADER() { return _PIMAGE_SECTION_HEADER; }
+
     const LPVOID GetImageBase() { return _imageBase; }
     const LPVOID GetEntryPoint() { return _entryPoint; }
+
+    WORD GetNumberOfSections() { return _PIMAGE_NT_HEADERS->FileHeader.NumberOfSections; }
+    PIMAGE_SECTION_HEADER GetSectionHeader(WORD index) { return &_PIMAGE_SECTION_HEADER[index]; }
 
   private:
     PIMAGE_DOS_HEADER _PIMAGE_DOS_HEADER;
