@@ -8,7 +8,7 @@ int main()
 {
   LPWSTR inputFileName = nullptr;
   LPWSTR outputFileName = nullptr;
-  CommandLine::OPTION option = CommandLine::OPTION::RESOURCE;
+  CommandLine::Option option = CommandLine::Option::Resource;
 
   Console::Console console;
   CommandLine::CommandLine commandLine;
@@ -26,7 +26,7 @@ int main()
 
   bool success = false;
   Packer::PackerUtils packerUtils;
-  if (option == CommandLine::OPTION::RESOURCE)
+  if (option == CommandLine::Option::Resource)
   {
     console.WriteLine(L"Using option -r, --resource");
     Packer::ResourcePacker packer(&packerUtils);

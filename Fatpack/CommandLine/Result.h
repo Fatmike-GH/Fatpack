@@ -9,7 +9,7 @@ namespace CommandLine
   {
     LPWSTR InputFileName = nullptr;
     LPWSTR OutputFileName = nullptr;
-    OPTION Option = OPTION::RESOURCE;
+    Option Option = Option::Resource;
     bool IsValid = false;
     WCHAR ErrorMessage[MAX_LEN] = { 0 };
   };

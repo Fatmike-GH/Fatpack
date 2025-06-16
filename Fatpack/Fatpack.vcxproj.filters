@@ -258,5 +258,8 @@
     <ClInclude Include="Compressor\Compressor.h">
       <Filter>Compressor</Filter>
     </ClInclude>
+    <ClInclude Include="Packer\Error.h">
+      <Filter>Packer</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

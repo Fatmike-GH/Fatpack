@@ -3,9 +3,9 @@
 
 namespace CommandLine
 {
-  enum OPTION
+  enum class Option
   {
-    RESOURCE = 0,
-    SECTION = 1
+    Resource = 0,
+    Section
   };
 }

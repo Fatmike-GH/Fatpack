@@ -1,7 +1,7 @@
 #pragma once
 #include <Windows.h>
+#include "Error.h"
 #include "..\PEFile\PEFile.h"
-#include "..\Console\Console.h"
 
 namespace Packer
 {
@@ -27,9 +27,13 @@ namespace Packer
     bool RebaseLoaderToLastSection();
     bool CompressAndAppendToLastSection();
 
+    Error GetLastError() { return _lastError; }
+    void SetLastError(Error error) { _lastError = error; }
+
+  private:
     PackerUtils* _packerUtils;
     PEFile::PEFile _peLoader;
     PEFile::PEFile _inputFile;
-    Console::Console _console;
+    Error _lastError;
   };
 }

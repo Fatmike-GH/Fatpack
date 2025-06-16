@@ -7,6 +7,7 @@ namespace Packer
   ResourcePacker::ResourcePacker(PackerUtils* packerUtils)
   {
     _packerUtils = packerUtils;
+    _lastError = Error::Ok;
   }
 
   ResourcePacker::~ResourcePacker()
@@ -15,6 +16,8 @@ namespace Packer
 
   bool ResourcePacker::Pack(LPWSTR inputFileName, LPWSTR outputFileName)
   {
+    SetLastError(Error::Ok);
+
     return ReadPeFile(inputFileName, _inputFile) &&
            ValidateInputFile() &&
            PrepareLoaderStub() &&
@@ -26,43 +29,66 @@ namespace Packer
 
   bool ResourcePacker::ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile)
   {
-    return _packerUtils->ReadPeFile(fileName, peFile, _console);
+    if (!_packerUtils->ReadPeFile(fileName, peFile))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool ResourcePacker::ValidateInputFile()
   {
-    return _packerUtils->ValidatePeFile(_inputFile, _console);
+    if (!_packerUtils->ValidatePeFile(_inputFile))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool ResourcePacker::PrepareLoaderStub()
   {
-    return _packerUtils->PrepareLoaderStub(_inputFile, _peLoader, _console);
+    if (!_packerUtils->PrepareLoaderStub(_inputFile, _peLoader))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool ResourcePacker::RebaseIfNeeded()
   {
     if (!_inputFile.HasRelocationTable() && _inputFile.IntersectsWith(_peLoader))
     {
-      _console.WriteLine(L"Image base conflict. Rebasing loader...");
       ULONGLONG newBase = _inputFile.GetNextImageBase();
       if (!_peLoader.Rebase(newBase))
       {
-        _console.WriteError(L"Rebasing failed.");
+        SetLastError(Error::Error_Rebasing);
         return false;
       }
-      _console.WriteLine(L"Rebasing finished.");
     }
     return true;
   }
 
   bool ResourcePacker::SavePeLoader(LPWSTR fileName)
   {
-    return _packerUtils->SavePeFile(fileName, _peLoader, _console);
+    if (!_packerUtils->SavePeFile(fileName, _peLoader))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool ResourcePacker::AppendResourcesToLoader(LPWSTR inputFileName, LPWSTR outputFileName)
   {
-    return _packerUtils->AppendResources(inputFileName, outputFileName, _console);
+    if (!_packerUtils->AppendResources(inputFileName, outputFileName))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool ResourcePacker::CompressAndEmbed(LPWSTR outputFileName)
@@ -73,24 +99,24 @@ namespace Packer
 
     if (!compressor.Compress(_inputFile.GetBuffer(), _inputFile.GetBufferSize(), &compressed, &compressedSize))
     {
-      _console.WriteError(L"Compression failed.");
+      SetLastError(Error::Error_Compressing);
       return false;
     }
 
     HANDLE updateHandle = BeginUpdateResourceW(outputFileName, FALSE);
     if (updateHandle == nullptr)
     {
-      _console.WriteError(L"Appending compressed data failed.");
+      SetLastError(Error::Error_Appending_Compressed_Data);
       return false;
     }
     if (UpdateResource(updateHandle, RT_RCDATA, L"FPACK", MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), compressed, (DWORD)compressedSize) == FALSE)
     {
-      _console.WriteError(L"Appending compressed data failed.");
+      SetLastError(Error::Error_Appending_Compressed_Data);
       return false;
     }
     if (EndUpdateResource(updateHandle, FALSE) == FALSE)
     {
-      _console.WriteError(L"Appending compressed data failed.");
+      SetLastError(Error::Error_Appending_Compressed_Data);
       return false;
     }
 

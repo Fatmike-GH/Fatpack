@@ -7,6 +7,7 @@ namespace Packer
   SectionPacker::SectionPacker(PackerUtils* packerUtils)
   {
     _packerUtils = packerUtils;
+    _lastError = Error::Ok;
   }
 
   SectionPacker::~SectionPacker()
@@ -15,6 +16,8 @@ namespace Packer
 
   bool SectionPacker::Pack(LPWSTR inputFileName, LPWSTR outputFileName)
   {
+    SetLastError(Error::Ok);
+
     return ReadPeFile(inputFileName, _inputFile) &&
            ValidateInputFile() &&
            PrepareLoaderStub() &&
@@ -28,27 +31,52 @@ namespace Packer
 
   bool SectionPacker::ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile)
   {
-    return _packerUtils->ReadPeFile(fileName, peFile, _console);  
+    if (!_packerUtils->ReadPeFile(fileName, peFile))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool SectionPacker::ValidateInputFile()
   {
-    return _packerUtils->ValidatePeFile(_inputFile, _console);
+    if (!_packerUtils->ValidatePeFile(_inputFile))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool SectionPacker::PrepareLoaderStub()
   {
-    return _packerUtils->PrepareLoaderStub(_inputFile, _peLoader, _console);
+    if (!_packerUtils->PrepareLoaderStub(_inputFile, _peLoader))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool SectionPacker::SavePeLoader(LPWSTR outputFileName)
   {
-    return _packerUtils->SavePeFile(outputFileName, _peLoader, _console);
+    if (!_packerUtils->SavePeFile(outputFileName, _peLoader))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool SectionPacker::AppendResourcesToLoader(LPWSTR inputFileName, LPWSTR outputFileName)
   {
-    return _packerUtils->AppendResources(inputFileName, outputFileName, _console);
+    if (!_packerUtils->AppendResources(inputFileName, outputFileName))
+    {
+      SetLastError(_packerUtils->GetLastError());
+      return false;
+    }
+    return true;
   }
 
   bool SectionPacker::RebaseLoaderToLastSection()
@@ -60,7 +88,7 @@ namespace Packer
 
     if (!_peLoader.Rebase(alignedBase))
     {
-      _console.WriteError(L"Rebasing failed.");
+      SetLastError(Error::Error_Rebasing);
       return false;
     }
 
@@ -75,7 +103,6 @@ namespace Packer
     lastSection->Misc.VirtualSize = _peLoader.AlignSection(_inputFile.GetSizeOfImage());
     _peLoader.NT_HEADERS()->OptionalHeader.SizeOfImage = _peLoader.AlignSection(lastSection->VirtualAddress + lastSection->Misc.VirtualSize);
 
-    _console.WriteLine(L"Rebasing finished.");
     return true;
   }
 
@@ -87,7 +114,7 @@ namespace Packer
 
     if (!compressor.Compress(_inputFile.GetBuffer(), _inputFile.GetBufferSize(), &compressed, &compressedSize))
     {
-      _console.WriteError(L"Compression failed.");
+      SetLastError(Error::Error_Compressing);
       return false;
     }
 
@@ -104,7 +131,7 @@ namespace Packer
 
     if (!_peLoader.Resize(newBufferSize))
     {
-      _console.WriteError(L"Appending compressed data failed.");
+      SetLastError(Error::Error_Appending_Compressed_Data);
       compressor.Free(compressed);
       return false;
     }

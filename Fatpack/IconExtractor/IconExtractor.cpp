@@ -121,7 +121,7 @@ namespace IconExtractor
     if (!groupIconName)
     {
       FreeLibrary(sourceModuleHandle);
-      return false;
+      return true;
     }
 
     // Find and load the RT_GROUP_ICON resource
@@ -129,14 +129,14 @@ namespace IconExtractor
     if (!groupIconHandle)
     {
       FreeLibrary(sourceModuleHandle);
-      return false;
+      return true;
     }
 
     HGLOBAL groupIconDataHandle = LoadResource(sourceModuleHandle, groupIconHandle);
     if (!groupIconDataHandle)
     {
       FreeLibrary(sourceModuleHandle);
-      return false;
+      return true;
     }
 
     ICONGROUP* groupIcon = (ICONGROUP*)LockResource(groupIconDataHandle);

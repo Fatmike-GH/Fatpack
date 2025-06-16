@@ -9,50 +9,51 @@ namespace Packer
 {
   PackerUtils::PackerUtils()
   {
+    _lastError = Error::Ok;
   }
 
   PackerUtils::~PackerUtils()
   {
   }
 
-  bool PackerUtils::ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile, Console::Console& console)
+  bool PackerUtils::ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile)
   {
     BinaryFileReader::BinaryFileReader reader(fileName);
     if (reader.GetBufferSize() == 0 || reader.GetBuffer() == nullptr)
     {
-      console.WriteError(L"Failed to read file.");
+      SetLastError(Error::Error_Read_File);
       return false;
     }
 
     if (!peFile.LoadFromBuffer(reader.GetBuffer(), reader.GetBufferSize()))
     {
-      console.WriteError(L"Failed to load PE file from buffer.");
+      SetLastError(Error::Error_Load_Pe_From_Buffer);
       return false;
     }
     return true;
   }
 
-  bool PackerUtils::ValidatePeFile(PEFile::PEFile& peFile, Console::Console& console)
+  bool PackerUtils::ValidatePeFile(PEFile::PEFile& peFile)
   {
     if (!peFile.IsPEFile())
     {
-      console.WriteError(L"Input file is not a valid PE file.");
+      SetLastError(Error::Error_Pe_Not_Valid);
       return false;
     }
     if (!peFile.Isx64())
     {
-      console.WriteError(L"Input file is not a x64 PE file.");
+      SetLastError(Error::Error_Pe_Not_x64);
       return false;
     }
     if (!peFile.IsNative())
     {
-      console.WriteError(L"Input file is not a native PE file.");
+      SetLastError(Error::Error_Pe_Not_Native);
       return false;
     }
     return true;
   }
 
-  bool PackerUtils::PrepareLoaderStub(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader, Console::Console& console)
+  bool PackerUtils::PrepareLoaderStub(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
   {
     ResourceLoader::ResourceLoader resourceLoader;
     DWORD size = 0;
@@ -60,18 +61,16 @@ namespace Packer
 
     if (inputFile.IsConsole())
     {
-      console.WriteLine(L"Using console loader stub.");
       buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1000), RT_RCDATA, size);
     }
     else
     {
-      console.WriteLine(L"Using windows loader stub.");
       buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1001), RT_RCDATA, size);
     }
 
     if (!buffer || size == 0 || !peLoader.LoadFromBuffer(buffer, size))
     {
-      console.WriteError(L"Loading loader stub failed.");
+      SetLastError(Error::Error_Loading_Loader_Stub);
       return false;
     }
 
@@ -79,35 +78,34 @@ namespace Packer
     return true;
   }
 
-  bool PackerUtils::SavePeFile(LPWSTR fileName, PEFile::PEFile& peFile, Console::Console& console)
+  bool PackerUtils::SavePeFile(LPWSTR fileName, PEFile::PEFile& peFile)
   {
     BinaryFileWriter::BinaryFileWriter writer;
     if (!writer.WriteFile(fileName, peFile.GetBuffer(), peFile.GetBufferSize()))
     {
-      console.WriteError(L"Failed to save PE file.");
+      SetLastError(Error::Error_Saving_Pe);
       return false;
     }
     return true;
   }
 
-  bool PackerUtils::AppendResources(LPWSTR inputFileName, LPWSTR outputFileName, Console::Console& console)
+  bool PackerUtils::AppendResources(LPWSTR inputFileName, LPWSTR outputFileName)
   {
     IconExtractor::IconExtractor iconExtractor;
-    if (iconExtractor.ExtractAndSetIconWithCustomIds(inputFileName, outputFileName))
+    if (!iconExtractor.ExtractAndSetIconWithCustomIds(inputFileName, outputFileName))
     {
-      console.WriteLine(L"Icon added.");
+      SetLastError(Error::Error_Adding_Icon);
+      return false;
     }
 
     ManifestExtractor::ManifestExtractor manifestExtractor;
     if (manifestExtractor.ExtractManifestResources(inputFileName))
     {
-      console.WriteLine(L"Manifest found. Adding manifest...");
       if (!manifestExtractor.AddManifestResourcesToTarget(outputFileName))
       {
-        console.WriteError(L"Adding manifest failed.");
+        SetLastError(Error::Error_Adding_Manifest);
         return false;
       }
-      console.WriteLine(L"Manifest added.");
     }
 
     return true;

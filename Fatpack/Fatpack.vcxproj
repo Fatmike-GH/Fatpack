@@ -176,6 +176,7 @@
     <ClInclude Include="Console\Console.h" />
     <ClInclude Include="IconExtractor\IconExtractor.h" />
     <ClInclude Include="ManifestExtractor\ManifestExtractor.h" />
+    <ClInclude Include="Packer\Error.h" />
     <ClInclude Include="Packer\PackerUtils.h" />
     <ClInclude Include="Packer\ResourcePacker.h" />
     <ClInclude Include="Packer\SectionPacker.h" />

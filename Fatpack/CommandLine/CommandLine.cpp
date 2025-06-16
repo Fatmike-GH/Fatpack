@@ -66,11 +66,11 @@ namespace CommandLine
       LPWSTR option = _argumentVector[3];
       if (wcscmp(option, L"-r") == 0 || wcscmp(option, L"--resource") == 0)
       {
-        _result.Option = OPTION::RESOURCE;
+        _result.Option = Option::Resource;
       }
       else if (wcscmp(option, L"-s") == 0 || wcscmp(option, L"--section") == 0)
       {
-        _result.Option = OPTION::SECTION;
+        _result.Option = Option::Section;
       }
       else
       {
