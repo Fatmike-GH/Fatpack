@@ -7,7 +7,7 @@ namespace Packer
   ResourcePacker::ResourcePacker(PackerUtils* packerUtils)
   {
     _packerUtils = packerUtils;
-    _lastError = Error::Ok;
+    _lastError = Error::ErrorCode::Ok;
   }
 
   ResourcePacker::~ResourcePacker()
@@ -16,7 +16,7 @@ namespace Packer
 
   bool ResourcePacker::Pack(LPWSTR inputFileName, LPWSTR outputFileName)
   {
-    SetLastError(Error::Ok);
+    SetLastError(Error::ErrorCode::Ok);
 
     return ReadPeFile(inputFileName, _inputFile) &&
            ValidateInputFile() &&
@@ -64,7 +64,7 @@ namespace Packer
       ULONGLONG newBase = _inputFile.GetNextImageBase();
       if (!_peLoader.Rebase(newBase))
       {
-        SetLastError(Error::Error_Rebasing);
+        SetLastError(Error::ErrorCode::Error_Rebasing);
         return false;
       }
     }
@@ -99,24 +99,24 @@ namespace Packer
 
     if (!compressor.Compress(_inputFile.GetBuffer(), _inputFile.GetBufferSize(), &compressed, &compressedSize))
     {
-      SetLastError(Error::Error_Compressing);
+      SetLastError(Error::ErrorCode::Error_Compressing);
       return false;
     }
 
     HANDLE updateHandle = BeginUpdateResourceW(outputFileName, FALSE);
     if (updateHandle == nullptr)
     {
-      SetLastError(Error::Error_Appending_Compressed_Data);
+      SetLastError(Error::ErrorCode::Error_Appending_Compressed_Data);
       return false;
     }
     if (UpdateResource(updateHandle, RT_RCDATA, L"FPACK", MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), compressed, (DWORD)compressedSize) == FALSE)
     {
-      SetLastError(Error::Error_Appending_Compressed_Data);
+      SetLastError(Error::ErrorCode::Error_Appending_Compressed_Data);
       return false;
     }
     if (EndUpdateResource(updateHandle, FALSE) == FALSE)
     {
-      SetLastError(Error::Error_Appending_Compressed_Data);
+      SetLastError(Error::ErrorCode::Error_Appending_Compressed_Data);
       return false;
     }
 

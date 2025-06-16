@@ -7,7 +7,7 @@ namespace Packer
   SectionPacker::SectionPacker(PackerUtils* packerUtils)
   {
     _packerUtils = packerUtils;
-    _lastError = Error::Ok;
+    _lastError = Error::ErrorCode::Ok;
   }
 
   SectionPacker::~SectionPacker()
@@ -16,7 +16,7 @@ namespace Packer
 
   bool SectionPacker::Pack(LPWSTR inputFileName, LPWSTR outputFileName)
   {
-    SetLastError(Error::Ok);
+    SetLastError(Error::ErrorCode::Ok);
 
     return ReadPeFile(inputFileName, _inputFile) &&
            ValidateInputFile() &&
@@ -88,7 +88,7 @@ namespace Packer
 
     if (!_peLoader.Rebase(alignedBase))
     {
-      SetLastError(Error::Error_Rebasing);
+      SetLastError(Error::ErrorCode::Error_Rebasing);
       return false;
     }
 
@@ -114,7 +114,7 @@ namespace Packer
 
     if (!compressor.Compress(_inputFile.GetBuffer(), _inputFile.GetBufferSize(), &compressed, &compressedSize))
     {
-      SetLastError(Error::Error_Compressing);
+      SetLastError(Error::ErrorCode::Error_Compressing);
       return false;
     }
 
@@ -131,7 +131,7 @@ namespace Packer
 
     if (!_peLoader.Resize(newBufferSize))
     {
-      SetLastError(Error::Error_Appending_Compressed_Data);
+      SetLastError(Error::ErrorCode::Error_Appending_Compressed_Data);
       compressor.Free(compressed);
       return false;
     }

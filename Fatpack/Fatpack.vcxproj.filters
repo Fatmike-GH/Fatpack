@@ -148,6 +148,9 @@
     <Filter Include="Packer">
       <UniqueIdentifier>{55d846e1-f9c6-479f-89c8-7a26acf0fe19}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Error">
+      <UniqueIdentifier>{575e2628-0293-46e2-abd2-251846599b4e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\CRT\crt.h">
@@ -176,9 +179,6 @@
     </ClInclude>
     <ClInclude Include="..\Shared\BinaryFileReader\BinaryFileReader.h">
       <Filter>BinaryFileReader</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandLine\Result.h">
-      <Filter>CommandLine</Filter>
     </ClInclude>
     <ClInclude Include="CommandLine\Option.h">
       <Filter>CommandLine</Filter>
@@ -258,8 +258,8 @@
     <ClInclude Include="Compressor\Compressor.h">
       <Filter>Compressor</Filter>
     </ClInclude>
-    <ClInclude Include="Packer\Error.h">
-      <Filter>Packer</Filter>
+    <ClInclude Include="Error\Error.h">
+      <Filter>Error</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

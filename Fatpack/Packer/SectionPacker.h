@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-#include "Error.h"
+#include "..\Error\Error.h"
 #include "..\PEFile\PEFile.h"
 
 namespace Packer
@@ -17,6 +17,7 @@ namespace Packer
     ~SectionPacker();
 
     bool Pack(LPWSTR inputFileName, LPWSTR outputFileName);
+    Error::ErrorCode GetLastError() { return _lastError; }
 
   private:
     bool ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile);
@@ -26,14 +27,12 @@ namespace Packer
     bool AppendResourcesToLoader(LPWSTR inputFileName, LPWSTR outputFileName);
     bool RebaseLoaderToLastSection();
     bool CompressAndAppendToLastSection();
-
-    Error GetLastError() { return _lastError; }
-    void SetLastError(Error error) { _lastError = error; }
+    void SetLastError(Error::ErrorCode error) { _lastError = error; }
 
   private:
     PackerUtils* _packerUtils;
     PEFile::PEFile _peLoader;
     PEFile::PEFile _inputFile;
-    Error _lastError;
+    Error::ErrorCode _lastError;
   };
 }

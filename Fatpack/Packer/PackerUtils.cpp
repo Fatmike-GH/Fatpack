@@ -9,7 +9,7 @@ namespace Packer
 {
   PackerUtils::PackerUtils()
   {
-    _lastError = Error::Ok;
+    _lastError = Error::ErrorCode::Ok;
   }
 
   PackerUtils::~PackerUtils()
@@ -21,13 +21,13 @@ namespace Packer
     BinaryFileReader::BinaryFileReader reader(fileName);
     if (reader.GetBufferSize() == 0 || reader.GetBuffer() == nullptr)
     {
-      SetLastError(Error::Error_Read_File);
+      SetLastError(Error::ErrorCode::Error_Read_File);
       return false;
     }
 
     if (!peFile.LoadFromBuffer(reader.GetBuffer(), reader.GetBufferSize()))
     {
-      SetLastError(Error::Error_Load_Pe_From_Buffer);
+      SetLastError(Error::ErrorCode::Error_Load_Pe_From_Buffer);
       return false;
     }
     return true;
@@ -37,17 +37,17 @@ namespace Packer
   {
     if (!peFile.IsPEFile())
     {
-      SetLastError(Error::Error_Pe_Not_Valid);
+      SetLastError(Error::ErrorCode::Error_Pe_Not_Valid);
       return false;
     }
     if (!peFile.Isx64())
     {
-      SetLastError(Error::Error_Pe_Not_x64);
+      SetLastError(Error::ErrorCode::Error_Pe_Not_x64);
       return false;
     }
     if (!peFile.IsNative())
     {
-      SetLastError(Error::Error_Pe_Not_Native);
+      SetLastError(Error::ErrorCode::Error_Pe_Not_Native);
       return false;
     }
     return true;
@@ -70,7 +70,7 @@ namespace Packer
 
     if (!buffer || size == 0 || !peLoader.LoadFromBuffer(buffer, size))
     {
-      SetLastError(Error::Error_Loading_Loader_Stub);
+      SetLastError(Error::ErrorCode::Error_Loading_Loader_Stub);
       return false;
     }
 
@@ -83,7 +83,7 @@ namespace Packer
     BinaryFileWriter::BinaryFileWriter writer;
     if (!writer.WriteFile(fileName, peFile.GetBuffer(), peFile.GetBufferSize()))
     {
-      SetLastError(Error::Error_Saving_Pe);
+      SetLastError(Error::ErrorCode::Error_Saving_Pe);
       return false;
     }
     return true;
@@ -94,7 +94,7 @@ namespace Packer
     IconExtractor::IconExtractor iconExtractor;
     if (!iconExtractor.ExtractAndSetIconWithCustomIds(inputFileName, outputFileName))
     {
-      SetLastError(Error::Error_Adding_Icon);
+      SetLastError(Error::ErrorCode::Error_Adding_Icon);
       return false;
     }
 
@@ -103,7 +103,7 @@ namespace Packer
     {
       if (!manifestExtractor.AddManifestResourcesToTarget(outputFileName))
       {
-        SetLastError(Error::Error_Adding_Manifest);
+        SetLastError(Error::ErrorCode::Error_Adding_Manifest);
         return false;
       }
     }

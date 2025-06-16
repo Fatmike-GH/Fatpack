@@ -150,7 +150,6 @@
     <ClInclude Include="BinaryFileWriter\BinaryFileWriter.h" />
     <ClInclude Include="CommandLine\CommandLine.h" />
     <ClInclude Include="CommandLine\Option.h" />
-    <ClInclude Include="CommandLine\Result.h" />
     <ClInclude Include="Compressor\Compressor.h" />
     <ClInclude Include="Compressor\lzma\common_internal.h" />
     <ClInclude Include="Compressor\lzma\easylzma\common.h" />
@@ -174,9 +173,9 @@
     <ClInclude Include="Compressor\lzma\pavlov\Types.h" />
     <ClInclude Include="Compressor\lzma\wrapper\easylzmawrapper.h" />
     <ClInclude Include="Console\Console.h" />
+    <ClInclude Include="Error\Error.h" />
     <ClInclude Include="IconExtractor\IconExtractor.h" />
     <ClInclude Include="ManifestExtractor\ManifestExtractor.h" />
-    <ClInclude Include="Packer\Error.h" />
     <ClInclude Include="Packer\PackerUtils.h" />
     <ClInclude Include="Packer\ResourcePacker.h" />
     <ClInclude Include="Packer\SectionPacker.h" />

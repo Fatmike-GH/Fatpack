@@ -1,28 +1,25 @@
 #include "CommandLine.h"
-#include "Result.h"
 
 namespace CommandLine
 {
   CommandLine::CommandLine()
   {
+    _lastError = Error::ErrorCode::Ok;
   }
 
   CommandLine::~CommandLine()
   {
   }
 
-  Result CommandLine::Parse()
+  bool CommandLine::Parse(LPWSTR& inputFileName, LPWSTR& outputFileName, Option& option)
   {
-    if (!LoadArguments()) return _result;
+    SetLastError(Error::ErrorCode::Ok);
 
-    if (!ValidateArgumentCount()) return _result;
-    SetFileNames();
-
-    if (!AreFileNamesDifferent()) return _result;
-    if (!ParseOption()) return _result;
-
-    _result.IsValid = true;
-    return _result;
+    return LoadArguments() &&
+           ValidateArgumentCount() &&
+           SetFileNames(inputFileName, outputFileName) &&
+           AreFileNamesDifferent(inputFileName, outputFileName) &&
+           ParseOption(option);
   }
 
   bool CommandLine::LoadArguments()
@@ -36,56 +33,49 @@ namespace CommandLine
   {
     if (_argumentCount < 3 || _argumentCount > 4)
     {
-      SetErrorMessage(L"Invalid number of arguments.");
+      SetLastError(Error::ErrorCode::Error_Argument_Count);
       return false;
     }
     return true;
   }
 
-  bool CommandLine::SetFileNames()
+  bool CommandLine::SetFileNames(LPWSTR& inputFileName, LPWSTR& outputFileName)
   {
-    _result.InputFileName = _argumentVector[1];
-    _result.OutputFileName = _argumentVector[2];
+    inputFileName = _argumentVector[1];
+    outputFileName = _argumentVector[2];
     return true;
   }
 
-  bool CommandLine::AreFileNamesDifferent()
+  bool CommandLine::AreFileNamesDifferent(LPWSTR inputFileName, LPWSTR outputFileName)
   {
-    if (wcscmp(_result.InputFileName, _result.OutputFileName) == 0)
+    if (wcscmp(inputFileName, outputFileName) == 0)
     {
-      SetErrorMessage(L"Input and output files must be different.");
+      SetLastError(Error::ErrorCode::Error_Equal_Filenames);
       return false;
     }
     return true;
   }
 
-  bool CommandLine::ParseOption()
+  bool CommandLine::ParseOption(Option& option)
   {
+    option = Option::Resource;
     if (_argumentCount == 4)
     {
-      LPWSTR option = _argumentVector[3];
-      if (wcscmp(option, L"-r") == 0 || wcscmp(option, L"--resource") == 0)
+      LPWSTR input = _argumentVector[3];
+      if (wcscmp(input, L"-r") == 0 || wcscmp(input, L"--resource") == 0)
       {
-        _result.Option = Option::Resource;
+        option = Option::Resource;
       }
-      else if (wcscmp(option, L"-s") == 0 || wcscmp(option, L"--section") == 0)
+      else if (wcscmp(input, L"-s") == 0 || wcscmp(input, L"--section") == 0)
       {
-        _result.Option = Option::Section;
+        option = Option::Section;
       }
       else
       {
-        SetErrorMessage(L"Unknown option.");
+        SetLastError(Error::ErrorCode::Error_Unknown_Option);
         return false;
       }
     }
     return true;
-  }
-
-  void CommandLine::SetErrorMessage(const WCHAR* message)
-  {
-    size_t length = wcslen(message);
-    size_t count = (length < MAX_LEN - 1) ? length : MAX_LEN - 1;
-    memcpy(_result.ErrorMessage, message, count * sizeof(WCHAR));
-    _result.ErrorMessage[count] = L'\0';
   }
 }

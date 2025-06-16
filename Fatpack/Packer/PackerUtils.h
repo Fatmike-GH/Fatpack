@@ -1,6 +1,6 @@
 #pragma once
 #include <Windows.h>
-#include "Error.h"
+#include "..\Error\Error.h"
 #include "..\PEFile\PEFile.h"
 
 namespace Packer
@@ -16,11 +16,12 @@ namespace Packer
     bool PrepareLoaderStub(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader);
     bool SavePeFile(LPWSTR fileName, PEFile::PEFile& peFile);
     bool AppendResources(LPWSTR inputFileName, LPWSTR outputFileName);
-
-    Error GetLastError() { return _lastError; }
-    void SetLastError(Error error) { _lastError = error; }
+    Error::ErrorCode GetLastError() { return _lastError; }
 
   private:
-    Error _lastError;
+    void SetLastError(Error::ErrorCode error) { _lastError = error; }
+
+  private:
+    Error::ErrorCode _lastError;
   };
 }

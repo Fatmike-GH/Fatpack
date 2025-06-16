@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
-#include "Result.h"
+#include "Option.h"
+#include "..\Error\Error.h"
 
 namespace CommandLine
 {
@@ -10,19 +11,22 @@ namespace CommandLine
     CommandLine();
     ~CommandLine();
 
-    Result Parse();
+    bool Parse(LPWSTR& inputFileName, LPWSTR& outputFileName, Option& option);
+    Error::ErrorCode GetLastError() { return _lastError; }   
 
   private:
     bool LoadArguments();
     bool ValidateArgumentCount();
-    bool SetFileNames();
-    bool AreFileNamesDifferent();
-    bool ParseOption();
-    void SetErrorMessage(const WCHAR* message);
+    bool SetFileNames(LPWSTR& inputFileName, LPWSTR& outputFileName);
+    bool AreFileNamesDifferent(LPWSTR inputFileName, LPWSTR outputFileName);
+    bool ParseOption(Option& option);
+    void SetLastError(Error::ErrorCode error) { _lastError = error; }
 
   private:
-    Result _result;
     int _argumentCount = 0;
-    LPWSTR* _argumentVector = nullptr;    
+    LPWSTR* _argumentVector = nullptr;
+    Error::ErrorCode _lastError;
+
+    const DWORD MAX_LEN = 256;
   };
 }
