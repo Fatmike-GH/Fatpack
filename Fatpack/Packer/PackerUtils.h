@@ -13,6 +13,7 @@ namespace Packer
 
     bool ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile, Console::Console& console);
     bool ValidatePeFile(PEFile::PEFile& peFile, Console::Console& console);
+    bool PrepareLoaderStub(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader, Console::Console& console);
     bool SavePeFile(LPWSTR fileName, PEFile::PEFile& peFile, Console::Console& console);
     bool AppendResources(LPWSTR inputFileName, LPWSTR outputFileName, Console::Console& console);
   };

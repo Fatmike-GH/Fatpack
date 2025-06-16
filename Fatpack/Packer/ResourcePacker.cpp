@@ -1,7 +1,6 @@
 #include "ResourcePacker.h"
 #include "PackerUtils.h"
 #include "..\Compressor\Compressor.h"
-#include "..\..\Shared\ResourceLoader\ResourceLoader.h"
 
 namespace Packer
 {
@@ -16,45 +15,28 @@ namespace Packer
 
   bool ResourcePacker::Pack(LPWSTR inputFileName, LPWSTR outputFileName)
   {
-    return LoadInputFile(inputFileName) &&
+    return ReadPeFile(inputFileName, _inputFile) &&
+           ValidateInputFile() &&
            PrepareLoaderStub() &&
            RebaseIfNeeded() &&
-           SaveLoader(outputFileName) &&
-           AddResources(inputFileName, outputFileName) &&
+           SavePeLoader(outputFileName) &&
+           AppendResourcesToLoader(inputFileName, outputFileName) &&
            CompressAndEmbed(outputFileName);
   }
 
-  bool ResourcePacker::LoadInputFile(LPWSTR fileName)
+  bool ResourcePacker::ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile)
   {
-    return _packerUtils->ReadPeFile(fileName, _inputFile, _console) &&
-           _packerUtils->ValidatePeFile(_inputFile, _console);
+    return _packerUtils->ReadPeFile(fileName, peFile, _console);
+  }
+
+  bool ResourcePacker::ValidateInputFile()
+  {
+    return _packerUtils->ValidatePeFile(_inputFile, _console);
   }
 
   bool ResourcePacker::PrepareLoaderStub()
   {
-    ResourceLoader::ResourceLoader resourceLoader;
-    DWORD size = 0;
-    BYTE* buffer = nullptr;
-
-    if (_inputFile.IsConsole())
-    {
-      _console.WriteLine(L"Using console loader stub.");
-      buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1000), RT_RCDATA, size);
-    }
-    else
-    {
-      _console.WriteLine(L"Using windows loader stub.");
-      buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1001), RT_RCDATA, size);
-    }
-
-    if (!buffer || size == 0 || !_peLoader.LoadFromBuffer(buffer, size))
-    {
-      _console.WriteError(L"Loading loader stub failed.");
-      return false;
-    }
-
-    resourceLoader.Free(buffer);
-    return true;
+    return _packerUtils->PrepareLoaderStub(_inputFile, _peLoader, _console);
   }
 
   bool ResourcePacker::RebaseIfNeeded()
@@ -73,12 +55,12 @@ namespace Packer
     return true;
   }
 
-  bool ResourcePacker::SaveLoader(LPWSTR fileName)
+  bool ResourcePacker::SavePeLoader(LPWSTR fileName)
   {
     return _packerUtils->SavePeFile(fileName, _peLoader, _console);
   }
 
-  bool ResourcePacker::AddResources(LPWSTR inputFileName, LPWSTR outputFileName)
+  bool ResourcePacker::AppendResourcesToLoader(LPWSTR inputFileName, LPWSTR outputFileName)
   {
     return _packerUtils->AppendResources(inputFileName, outputFileName, _console);
   }

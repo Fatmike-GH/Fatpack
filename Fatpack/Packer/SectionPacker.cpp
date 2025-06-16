@@ -1,7 +1,6 @@
 #include "SectionPacker.h"
 #include "PackerUtils.h"
 #include "..\Compressor\Compressor.h"
-#include "..\..\Shared\ResourceLoader\ResourceLoader.h"
 
 namespace Packer
 {
@@ -17,7 +16,7 @@ namespace Packer
   bool SectionPacker::Pack(LPWSTR inputFileName, LPWSTR outputFileName)
   {
     return ReadPeFile(inputFileName, _inputFile) &&
-           ValidatePeFile(_inputFile) &&
+           ValidateInputFile() &&
            PrepareLoaderStub() &&
            SavePeLoader(outputFileName) &&
            AppendResourcesToLoader(inputFileName, outputFileName) &&
@@ -29,40 +28,17 @@ namespace Packer
 
   bool SectionPacker::ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile)
   {
-    return _packerUtils->ReadPeFile(fileName, peFile, _console);
-          
+    return _packerUtils->ReadPeFile(fileName, peFile, _console);  
   }
 
-  bool SectionPacker::ValidatePeFile(PEFile::PEFile& peFile)
+  bool SectionPacker::ValidateInputFile()
   {
     return _packerUtils->ValidatePeFile(_inputFile, _console);
   }
 
   bool SectionPacker::PrepareLoaderStub()
   {
-    ResourceLoader::ResourceLoader resourceLoader;
-    DWORD size = 0;
-    BYTE* buffer = nullptr;
-
-    if (_inputFile.IsConsole())
-    {
-      _console.WriteLine(L"Using console loader stub.");
-      buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1000), RT_RCDATA, size);
-    }
-    else
-    {
-      _console.WriteLine(L"Using windows loader stub.");
-      buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1001), RT_RCDATA, size);
-    }
-
-    if (!buffer || size == 0 || !_peLoader.LoadFromBuffer(buffer, size))
-    {
-      _console.WriteError(L"Loading loader stub failed.");
-      return false;
-    }
-
-    resourceLoader.Free(buffer);
-    return true;
+    return _packerUtils->PrepareLoaderStub(_inputFile, _peLoader, _console);
   }
 
   bool SectionPacker::SavePeLoader(LPWSTR outputFileName)

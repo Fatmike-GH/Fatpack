@@ -19,11 +19,12 @@ namespace Packer
     bool Pack(LPWSTR inputFileName, LPWSTR outputFileName);
 
   private:
-    bool LoadInputFile(LPWSTR fileName);
+    bool ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile);
+    bool ValidateInputFile();
     bool PrepareLoaderStub();
     bool RebaseIfNeeded();
-    bool SaveLoader(LPWSTR fileName);
-    bool AddResources(LPWSTR inputFileName, LPWSTR outputFileName);
+    bool SavePeLoader(LPWSTR fileName);
+    bool AppendResourcesToLoader(LPWSTR inputFileName, LPWSTR outputFileName);
     bool CompressAndEmbed(LPWSTR outputFileName);
 
     PackerUtils* _packerUtils;

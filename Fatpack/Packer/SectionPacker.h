@@ -20,7 +20,7 @@ namespace Packer
 
   private:
     bool ReadPeFile(LPWSTR fileName, PEFile::PEFile& peFile);
-    bool ValidatePeFile(PEFile::PEFile& peFile);
+    bool ValidateInputFile();
     bool PrepareLoaderStub();
     bool SavePeLoader(LPWSTR outputFileName);
     bool AppendResourcesToLoader(LPWSTR inputFileName, LPWSTR outputFileName);

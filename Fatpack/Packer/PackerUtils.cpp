@@ -3,6 +3,7 @@
 #include "..\IconExtractor\IconExtractor.h"
 #include "..\ManifestExtractor\ManifestExtractor.h"
 #include "..\..\Shared\BinaryFileReader\BinaryFileReader.h"
+#include "..\..\Shared\ResourceLoader\ResourceLoader.h"
 
 namespace Packer
 {
@@ -48,6 +49,33 @@ namespace Packer
       console.WriteError(L"Input file is not a native PE file.");
       return false;
     }
+    return true;
+  }
+
+  bool PackerUtils::PrepareLoaderStub(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader, Console::Console& console)
+  {
+    ResourceLoader::ResourceLoader resourceLoader;
+    DWORD size = 0;
+    BYTE* buffer = nullptr;
+
+    if (inputFile.IsConsole())
+    {
+      console.WriteLine(L"Using console loader stub.");
+      buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1000), RT_RCDATA, size);
+    }
+    else
+    {
+      console.WriteLine(L"Using windows loader stub.");
+      buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1001), RT_RCDATA, size);
+    }
+
+    if (!buffer || size == 0 || !peLoader.LoadFromBuffer(buffer, size))
+    {
+      console.WriteError(L"Loading loader stub failed.");
+      return false;
+    }
+
+    resourceLoader.Free(buffer);
     return true;
   }
 
