@@ -35,7 +35,7 @@ namespace Console
   void Console::ShowHelp()
   {
     WriteLine(L"\n..::[Fatmike 2025]::..\n");
-    WriteLine(L"Version: Fatpack v1.5.0");
+    WriteLine(L"Version: Fatpack v1.5.1");
     WriteLine(L"Usage:\t fatpack.exe inputfile.exe outputfile.exe [OPTIONS]\n");
     WriteLine(L"[OPTIONS]");
     WriteLine(L"-r, --resource\t Packs inputfile.exe as resource (DEFAULT)");
