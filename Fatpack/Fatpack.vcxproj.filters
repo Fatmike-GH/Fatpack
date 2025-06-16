@@ -29,68 +29,77 @@
     <ClCompile Include="..\Shared\BinaryFileReader\BinaryFileReader.cpp">
       <Filter>BinaryFileReader</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\Compressor.cpp">
-      <Filter>Compressor</Filter>
+    <ClCompile Include="Packer\PackerUtils.cpp">
+      <Filter>Packer</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\7zBuf.c">
+    <ClCompile Include="Packer\ResourcePacker.cpp">
+      <Filter>Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Packer\SectionPacker.cpp">
+      <Filter>Packer</Filter>
+    </ClCompile>
+    <ClCompile Include="Compressor\lzma\common_internal.c">
+      <Filter>Compressor\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="Compressor\lzma\compress.c">
+      <Filter>Compressor\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="Compressor\lzma\decompress.c">
+      <Filter>Compressor\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="Compressor\lzma\lzip_header.c">
+      <Filter>Compressor\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="Compressor\lzma\lzma_header.c">
+      <Filter>Compressor\lzma</Filter>
+    </ClCompile>
+    <ClCompile Include="Compressor\lzma\pavlov\7zBuf.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\7zBuf2.c">
+    <ClCompile Include="Compressor\lzma\pavlov\7zBuf2.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\7zCrc.c">
+    <ClCompile Include="Compressor\lzma\pavlov\7zCrc.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\7zFile.c">
+    <ClCompile Include="Compressor\lzma\pavlov\7zFile.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\7zStream.c">
+    <ClCompile Include="Compressor\lzma\pavlov\7zStream.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\Alloc.c">
+    <ClCompile Include="Compressor\lzma\pavlov\Alloc.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\Bcj2.c">
+    <ClCompile Include="Compressor\lzma\pavlov\Bcj2.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\Bra.c">
+    <ClCompile Include="Compressor\lzma\pavlov\Bra.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\Bra86.c">
+    <ClCompile Include="Compressor\lzma\pavlov\Bra86.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\BraIA64.c">
+    <ClCompile Include="Compressor\lzma\pavlov\BraIA64.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\LzFind.c">
+    <ClCompile Include="Compressor\lzma\pavlov\LzFind.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\LzmaDec.c">
+    <ClCompile Include="Compressor\lzma\pavlov\LzmaDec.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\LzmaEnc.c">
+    <ClCompile Include="Compressor\lzma\pavlov\LzmaEnc.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\pavlov\LzmaLib.c">
+    <ClCompile Include="Compressor\lzma\pavlov\LzmaLib.c">
       <Filter>Compressor\lzma\pavlov</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\wrapper\easylzmawrapper.cpp">
+    <ClCompile Include="Compressor\lzma\wrapper\easylzmawrapper.cpp">
       <Filter>Compressor\lzma\wrapper</Filter>
     </ClCompile>
-    <ClCompile Include="Compessor\lzma\common_internal.c">
-      <Filter>Compressor\lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="Compessor\lzma\compress.c">
-      <Filter>Compressor\lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="Compessor\lzma\lzip_header.c">
-      <Filter>Compressor\lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="Compessor\lzma\lzma_header.c">
-      <Filter>Compressor\lzma</Filter>
-    </ClCompile>
-    <ClCompile Include="Compessor\lzma\decompress.c">
-      <Filter>Compressor\lzma</Filter>
+    <ClCompile Include="Compressor\Compressor.cpp">
+      <Filter>Compressor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +145,9 @@
     <Filter Include="Compressor\lzma\wrapper">
       <UniqueIdentifier>{b3a89139-3bfd-4a54-8917-fe3614c8e247}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Packer">
+      <UniqueIdentifier>{55d846e1-f9c6-479f-89c8-7a26acf0fe19}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Shared\CRT\crt.h">
@@ -165,77 +177,86 @@
     <ClInclude Include="..\Shared\BinaryFileReader\BinaryFileReader.h">
       <Filter>BinaryFileReader</Filter>
     </ClInclude>
-    <ClInclude Include="Compessor\Compressor.h">
-      <Filter>Compressor</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\easylzma\common.h">
-      <Filter>Compressor\lzma\easylzma</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\easylzma\compress.h">
-      <Filter>Compressor\lzma\easylzma</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\7zBuf.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\7zCrc.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\7zFile.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\7zVersion.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\Alloc.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\Bcj2.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\Bra.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\CpuArch.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\LzFind.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\LzHash.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\LzmaDec.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\LzmaEnc.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\LzmaLib.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\pavlov\Types.h">
-      <Filter>Compressor\lzma\pavlov</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\wrapper\easylzmawrapper.h">
-      <Filter>Compressor\lzma\wrapper</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\common_internal.h">
-      <Filter>Compressor\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\lzip_header.h">
-      <Filter>Compressor\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\lzma_header.h">
-      <Filter>Compressor\lzma</Filter>
-    </ClInclude>
-    <ClInclude Include="Compessor\lzma\easylzma\decompress.h">
-      <Filter>Compressor\lzma\easylzma</Filter>
-    </ClInclude>
     <ClInclude Include="CommandLine\Result.h">
       <Filter>CommandLine</Filter>
     </ClInclude>
     <ClInclude Include="CommandLine\Option.h">
       <Filter>CommandLine</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\PackerUtils.h">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\ResourcePacker.h">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Packer\SectionPacker.h">
+      <Filter>Packer</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\common_internal.h">
+      <Filter>Compressor\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\lzip_header.h">
+      <Filter>Compressor\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\lzma_header.h">
+      <Filter>Compressor\lzma</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\easylzma\common.h">
+      <Filter>Compressor\lzma\easylzma</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\easylzma\compress.h">
+      <Filter>Compressor\lzma\easylzma</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\easylzma\decompress.h">
+      <Filter>Compressor\lzma\easylzma</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\7zBuf.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\7zCrc.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\7zFile.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\7zVersion.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\Alloc.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\Bcj2.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\Bra.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\CpuArch.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\LzFind.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\LzHash.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\LzmaDec.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\LzmaEnc.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\LzmaLib.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\pavlov\Types.h">
+      <Filter>Compressor\lzma\pavlov</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\lzma\wrapper\easylzmawrapper.h">
+      <Filter>Compressor\lzma\wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="Compressor\Compressor.h">
+      <Filter>Compressor</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
