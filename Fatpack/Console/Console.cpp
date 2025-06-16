@@ -20,6 +20,7 @@ namespace Console
 
   void Console::WriteError(Error::ErrorCode errorCode)
   {
+    if (errorCode == Error::ErrorCode::Ok) return;
     WriteError(GetErrorString(errorCode));
   }
 
