@@ -27,6 +27,7 @@ namespace ApiCaller
   {
     auto function = (decltype(FindResourceW)*)ResolveKernel32Api("FindResourceW");
     return function(hModule, lpName, lpType);
+    //return FindResourceW(hModule, lpName, lpType);
   }
 
   HMODULE ApiCaller::CallGetModuleHandle(LPCSTR lpModuleName)
@@ -80,6 +81,7 @@ namespace ApiCaller
   {
     auto function = (decltype(LoadResource)*)ResolveKernel32Api("LoadResource");
     return function(hModule, hResInfo);
+    //return LoadResource(hModule, hResInfo);
   }
 
   LPVOID ApiCaller::CallLockResource(HGLOBAL hResData)

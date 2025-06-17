@@ -37,7 +37,7 @@ namespace PELoaderStub
   BYTE* ResourceLoaderStub::GetCompressedDataFromResource(DWORD& compressedSize)
   {
     ResourceLoader::ResourceLoader resourceLoader;
-    return resourceLoader.LoadResource(L"FPACK", RT_RCDATA, compressedSize);
+    return resourceLoader.LoadResource(MAKEINTRESOURCE(1000), RT_RCDATA, compressedSize);
   }
 
   BYTE* ResourceLoaderStub::Decompress(BYTE* compressedData, DWORD compressedSize, size_t& decompressedSize)
