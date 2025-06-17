@@ -109,7 +109,7 @@ namespace Packer
       SetLastError(Error::ErrorCode::Error_Appending_Compressed_Data);
       return false;
     }
-    if (UpdateResource(updateHandle, RT_RCDATA, MAKEINTRESOURCE(1000), MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), compressed, (DWORD)compressedSize) == FALSE)
+    if (UpdateResource(updateHandle, RT_RCDATA, L"FPACK", MAKELANGID(LANG_NEUTRAL, SUBLANG_NEUTRAL), compressed, (DWORD)compressedSize) == FALSE)
     {
       SetLastError(Error::ErrorCode::Error_Appending_Compressed_Data);
       return false;
