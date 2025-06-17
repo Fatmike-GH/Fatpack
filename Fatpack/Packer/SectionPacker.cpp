@@ -138,7 +138,7 @@ namespace Packer
 
     lastSection = _peLoader.GetSectionHeader(lastIndex);
     memcpy(_peLoader.GetBuffer() + lastSection->PointerToRawData, compressed, compressedSize);
-    memcpy(lastSection->Name, ".fpack  ", 8);
+    //memcpy(lastSection->Name, ".fpack  ", 8);
 
     compressor.Free(compressed);
     return true;

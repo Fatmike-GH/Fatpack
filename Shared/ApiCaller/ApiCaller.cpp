@@ -6,7 +6,7 @@ namespace ApiCaller
 
   ApiCaller::ApiCaller()
   {
-    _kernel32 = CallGetModuleHandle("kernel32.dll");
+    _kernel32 = CallLoadLibrary("kernel32.dll");
   }
 
   ApiCaller::~ApiCaller()
@@ -18,7 +18,7 @@ namespace ApiCaller
   {
     if (_instance == nullptr)
     {
-      ApiCaller* _instance = new ApiCaller();
+      _instance = new ApiCaller();
     }    
     return *_instance;
   }
@@ -71,9 +71,9 @@ namespace ApiCaller
 
   HMODULE ApiCaller::CallLoadLibrary(LPCSTR lpLibFileName)
   {
-    auto function = (decltype(LoadLibraryA)*)ResolveKernel32Api("LoadLibraryA");
-    return function(lpLibFileName);
-    //return LoadLibraryA(lpLibFileName);
+    /*auto function = (decltype(LoadLibraryA)*)ResolveKernel32Api("LoadLibraryA");
+    return function(lpLibFileName);*/
+    return LoadLibraryA(lpLibFileName);
   }
 
   HGLOBAL ApiCaller::CallLoadResource(HMODULE hModule, HRSRC hResInfo)
