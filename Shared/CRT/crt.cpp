@@ -1,4 +1,5 @@
 #include "crt.h"
+#include "..\ApiCaller\ApiCaller.h"
 
 #pragma function(memset)
 void* memset(void* _Dst, int _Val, size_t _Size)
@@ -75,7 +76,7 @@ void* __cdecl malloc(
   _In_ _CRT_GUARDOVERFLOW size_t size
 )
 {
-  return HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, size);
+  return ApiCaller::ApiCaller::Instance().CallHeapAlloc(ApiCaller::ApiCaller::Instance().CallGetProcessHeap(), HEAP_ZERO_MEMORY, size);
 }
 
 _CRT_HYBRIDPATCHABLE
@@ -83,7 +84,7 @@ void __cdecl free(
   _Pre_maybenull_ _Post_invalid_ void* ptr
 )
 {
-  HeapFree(GetProcessHeap(), 0, ptr);
+  ApiCaller::ApiCaller::Instance().CallHeapFree(ApiCaller::ApiCaller::Instance().CallGetProcessHeap(), 0, ptr);
 }
 
 _Success_(return != 0) _Check_return_ _Ret_maybenull_ _Post_writable_byte_size_(size)
@@ -103,7 +104,7 @@ void* __cdecl realloc(
     return NULL;
   }
 
-  return HeapReAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, ptr, size);
+  return ApiCaller::ApiCaller::Instance().CallHeapReAlloc(ApiCaller::ApiCaller::Instance().CallGetProcessHeap(), HEAP_ZERO_MEMORY, ptr, size);
 }
 
 void* operator new(size_t size)

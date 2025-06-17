@@ -2,12 +2,13 @@
 #include "PEFile.h"
 #include "PEImage.h"
 #include "..\TypeDefs\peb.h"
+#include "..\..\..\Shared\ApiCaller\ApiCaller.h"
 
 namespace PELoader
 {
   TlsResolver::TlsResolver()
   {
-    PEImage peLoaderImage(GetModuleHandle(nullptr));
+    PEImage peLoaderImage(ApiCaller::ApiCaller::Instance().CallGetModuleHandle(nullptr));
     _tlsIndex = GetTlsIndex(&peLoaderImage); // Get tls index of pe loader. It has been initialized by windows loader. Since we do not use tls data (only one tls callback (TlsCallbackProxy)) we can use this index.
   }
 
@@ -39,7 +40,7 @@ namespace PELoader
     LPVOID tlsData = GetTlsData(_tlsIndex);
     if (tlsData != nullptr)
     {
-      VirtualFree(tlsData, 0, MEM_RELEASE);
+      ApiCaller::ApiCaller::Instance().CallVirtualFree(tlsData, 0, MEM_RELEASE);
     }
     SetTlsData(_tlsIndex, nullptr);
   }
@@ -111,7 +112,7 @@ namespace PELoader
     size_t totalDataSize = rawDataSize + tlsDirectory->SizeOfZeroFill;
 
     // Allocate memory for the TLS data for the current thread
-    LPVOID tlsDataBlock = VirtualAlloc(nullptr, totalDataSize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    LPVOID tlsDataBlock = ApiCaller::ApiCaller::Instance().CallVirtualAlloc(nullptr, totalDataSize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
     if (!tlsDataBlock) return nullptr;
 
     // Copy the default TLS data to the thread specific memory
@@ -147,7 +148,7 @@ namespace PELoader
         PVOID* tlsArray = (PVOID*)peb->TlsExpansionSlots;
         if (!tlsArray)
         {
-          peb->TlsExpansionSlots = (PVOID*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(PVOID) * 1024);
+          peb->TlsExpansionSlots = (PVOID*)ApiCaller::ApiCaller::Instance().CallHeapAlloc(ApiCaller::ApiCaller::Instance().CallGetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(PVOID) * 1024);
         }
         if (peb->TlsExpansionSlots)
         {

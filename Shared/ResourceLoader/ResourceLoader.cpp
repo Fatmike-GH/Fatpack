@@ -1,4 +1,5 @@
 #include "ResourceLoader.h"
+#include "..\ApiCaller\ApiCaller.h"
 
 namespace ResourceLoader
 {
@@ -12,8 +13,8 @@ namespace ResourceLoader
 
   HRSRC ResourceLoader::FindResource(LPCWSTR resourceName, LPCWSTR resourceType)
   {
-    HMODULE moduleHandle = ::GetModuleHandle(nullptr);
-    HRSRC resourceHandle = ::FindResource(moduleHandle, resourceName, resourceType);
+    HMODULE moduleHandle = ApiCaller::ApiCaller::Instance().CallGetModuleHandle(nullptr);
+    HRSRC resourceHandle = ApiCaller::ApiCaller::Instance().CallFindResourceW(moduleHandle, resourceName, resourceType);
     return resourceHandle;
   }
 
@@ -21,17 +22,17 @@ namespace ResourceLoader
   {
     resourceSize = 0;
 
-    HMODULE moduleHandle = ::GetModuleHandle(nullptr);
-    HRSRC resourceHandle = ::FindResource(moduleHandle, resourceName, resourceType);
+    HMODULE moduleHandle = ApiCaller::ApiCaller::Instance().CallGetModuleHandle(nullptr);
+    HRSRC resourceHandle = ApiCaller::ApiCaller::Instance().CallFindResourceW(moduleHandle, resourceName, resourceType);
     if (resourceHandle == nullptr) return nullptr;
 
-    resourceSize = ::SizeofResource(moduleHandle, resourceHandle);
+    resourceSize = ApiCaller::ApiCaller::Instance().CallSizeofResource(moduleHandle, resourceHandle);
     if (resourceSize == 0) return nullptr;
 
-    HGLOBAL resourceDataHandle = ::LoadResource(moduleHandle, resourceHandle);
+    HGLOBAL resourceDataHandle = ApiCaller::ApiCaller::Instance().CallLoadResource(moduleHandle, resourceHandle);
     if (resourceDataHandle == nullptr) return nullptr;
 
-    LPVOID resourceData = ::LockResource(resourceDataHandle);
+    LPVOID resourceData = ApiCaller::ApiCaller::Instance().CallLockResource(resourceDataHandle);
     if (resourceData == nullptr) return nullptr;
 
     BYTE* buffer = new BYTE[resourceSize];

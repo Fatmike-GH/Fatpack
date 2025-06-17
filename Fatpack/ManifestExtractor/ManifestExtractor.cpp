@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "ManifestExtractor.h"
-
+#include "..\..\Shared\ApiCaller\ApiCaller.h"
 namespace ManifestExtractor
 {
   ManifestResource* ManifestExtractor::_manifestResources = nullptr;
@@ -8,8 +8,8 @@ namespace ManifestExtractor
 
   ManifestExtractor::ManifestExtractor()
   {
-    _heapHandle = GetProcessHeap();
-    _manifestResources = (ManifestResource*)HeapAlloc(_heapHandle, HEAP_ZERO_MEMORY, MAX_MANIFEST_RESOURCES * sizeof(ManifestResource));
+    _heapHandle = ApiCaller::ApiCaller::Instance().CallGetProcessHeap();
+    _manifestResources = (ManifestResource*)ApiCaller::ApiCaller::Instance().CallHeapAlloc(_heapHandle, HEAP_ZERO_MEMORY, MAX_MANIFEST_RESOURCES * sizeof(ManifestResource));
     _manifestCount = 0;
   }
 

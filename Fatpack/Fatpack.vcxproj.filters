@@ -101,6 +101,9 @@
     <ClCompile Include="Compressor\Compressor.cpp">
       <Filter>Compressor</Filter>
     </ClCompile>
+    <ClCompile Include="..\Shared\ApiCaller\ApiCaller.cpp">
+      <Filter>ApiCaller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CRT">
@@ -150,6 +153,9 @@
     </Filter>
     <Filter Include="Error">
       <UniqueIdentifier>{575e2628-0293-46e2-abd2-251846599b4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ApiCaller">
+      <UniqueIdentifier>{578ffe77-4472-4892-ac96-f9a7470ed6ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -260,6 +266,9 @@
     </ClInclude>
     <ClInclude Include="Error\Error.h">
       <Filter>Error</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\ApiCaller\ApiCaller.h">
+      <Filter>ApiCaller</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

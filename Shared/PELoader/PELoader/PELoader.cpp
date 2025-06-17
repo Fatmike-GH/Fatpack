@@ -4,6 +4,7 @@
 #include "PEImage.h"
 #include "TlsResolver.h"
 #include "..\TypeDefs\peb.h"
+#include "..\..\..\Shared\ApiCaller\ApiCaller.h"
 
 namespace PELoader
 {
@@ -38,10 +39,10 @@ namespace PELoader
 
   LPVOID PELoader::AllocateVirtualMemory(PEFile* pefile)
   {
-    LPVOID imageBase = VirtualAlloc((LPVOID)pefile->NT_HEADERS()->OptionalHeader.ImageBase, pefile->NT_HEADERS()->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    LPVOID imageBase = ApiCaller::ApiCaller::Instance().CallVirtualAlloc((LPVOID)pefile->NT_HEADERS()->OptionalHeader.ImageBase, pefile->NT_HEADERS()->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
     if (imageBase == nullptr)
     {
-      imageBase = VirtualAlloc(nullptr, pefile->NT_HEADERS()->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+      imageBase = ApiCaller::ApiCaller::Instance().CallVirtualAlloc(nullptr, pefile->NT_HEADERS()->OptionalHeader.SizeOfImage, MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
     }
     return imageBase;
   }
@@ -133,7 +134,7 @@ namespace PELoader
     {
       LPCSTR moduleName = (LPCSTR)((BYTE*)peImage->GetImageBase() + importDesc->Name);
 
-      HMODULE moduleHandle = LoadLibraryA(moduleName);
+      HMODULE moduleHandle = ApiCaller::ApiCaller::Instance().CallLoadLibrary(moduleName);
       if (!moduleHandle) return; // Error
 
       PIMAGE_THUNK_DATA origFirstThunk = (PIMAGE_THUNK_DATA)((BYTE*)peImage->GetImageBase() + importDesc->OriginalFirstThunk);
@@ -190,7 +191,7 @@ namespace PELoader
     auto exceptionTable = reinterpret_cast<RUNTIME_FUNCTION*>((BYTE*)peImage->GetImageBase() + exceptionDir.VirtualAddress);
     DWORD count = exceptionDir.Size / sizeof(RUNTIME_FUNCTION);
 
-    RtlAddFunctionTable(exceptionTable, count, reinterpret_cast<DWORD64>(peImage->GetImageBase()));
+    ApiCaller::ApiCaller::Instance().CallRtlAddFunctionTable(exceptionTable, count, reinterpret_cast<DWORD64>(peImage->GetImageBase()));
   }
 
   void PELoader::ApplySectionMemoryProtection(PEImage* peImage)
@@ -238,7 +239,7 @@ namespace PELoader
       if (sectionSize > 0)
       {
         DWORD oldProtect = 0;
-        VirtualProtect(sectionAddress, sectionSize, protection, &oldProtect);
+        ApiCaller::ApiCaller::Instance().CallVirtualProtect(sectionAddress, sectionSize, protection, &oldProtect);
       }
     }
   }
@@ -252,7 +253,7 @@ namespace PELoader
   {
     const char* dllName = (const char*)((BYTE*)peImage->GetImageBase() + delayDesc->DllNameRVA);
 
-    HMODULE moduleHandle = LoadLibraryA(dllName);
+    HMODULE moduleHandle = ApiCaller::ApiCaller::Instance().CallLoadLibrary(dllName);
     if (!moduleHandle) return; // Error
 
     BYTE* imageBase = (BYTE*)peImage->GetImageBase();
@@ -311,7 +312,7 @@ namespace PELoader
     for (LIST_ENTRY* e = list->Flink; e != list; e = e->Flink)
     {
       PLDR_DATA_TABLE_ENTRY entry = CONTAINING_RECORD(e, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
-      if ((PBYTE)entry->DllBase == (PBYTE)GetModuleHandle(nullptr))
+      if ((PBYTE)entry->DllBase == (PBYTE)ApiCaller::ApiCaller::Instance().CallGetModuleHandle(nullptr))
       {
         return entry;
       }

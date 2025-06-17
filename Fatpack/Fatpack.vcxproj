@@ -108,6 +108,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Shared\ApiCaller\ApiCaller.cpp" />
     <ClCompile Include="..\Shared\BinaryFileReader\BinaryFileReader.cpp" />
     <ClCompile Include="..\Shared\CRT\crt.cpp" />
     <ClCompile Include="..\Shared\ResourceLoader\ResourceLoader.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="PEFile\PEFile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Shared\ApiCaller\ApiCaller.h" />
     <ClInclude Include="..\Shared\BinaryFileReader\BinaryFileReader.h" />
     <ClInclude Include="..\Shared\CRT\crt.h" />
     <ClInclude Include="..\Shared\ResourceLoader\ResourceLoader.h" />

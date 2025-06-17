@@ -1,4 +1,5 @@
 #include "IconExtractor.h"
+#include "..\..\Shared\ApiCaller\ApiCaller.h"
 
 namespace IconExtractor
 {
@@ -43,7 +44,7 @@ namespace IconExtractor
       return false;
     }
 
-    HRSRC groupIconHandle = FindResource(sourceModuleHandle, groupIconName, RT_GROUP_ICON);
+    HRSRC groupIconHandle = ApiCaller::ApiCaller::Instance().CallFindResourceW(sourceModuleHandle, groupIconName, RT_GROUP_ICON);
     if (!groupIconHandle)
     {
       FreeLibrary(sourceModuleHandle);
@@ -78,7 +79,7 @@ namespace IconExtractor
     for (int i = 0; i < iconGroup->Count; i++)
     {
       WORD iconId = iconGroup->Entries[i].ID;
-      HRSRC iconHandle = FindResource(sourceModuleHandle, MAKEINTRESOURCE(iconId), RT_ICON);
+      HRSRC iconHandle = ApiCaller::ApiCaller::Instance().CallFindResourceW(sourceModuleHandle, MAKEINTRESOURCE(iconId), RT_ICON);
       if (iconHandle)
       {
         HGLOBAL iconDataHandle = LoadResource(sourceModuleHandle, iconHandle);
@@ -125,7 +126,7 @@ namespace IconExtractor
     }
 
     // Find and load the RT_GROUP_ICON resource
-    HRSRC groupIconHandle = FindResource(sourceModuleHandle, groupIconName, RT_GROUP_ICON);
+    HRSRC groupIconHandle = ApiCaller::ApiCaller::Instance().CallFindResourceW(sourceModuleHandle, groupIconName, RT_GROUP_ICON);
     if (!groupIconHandle)
     {
       FreeLibrary(sourceModuleHandle);
@@ -176,7 +177,7 @@ namespace IconExtractor
       WORD oldIconId = groupIcon->Entries[i].ID;
       WORD newIconId = CUSTOM_ICON_BASE_ID + i;
 
-      HRSRC oldIconHandle = FindResource(sourceModuleHandle, MAKEINTRESOURCE(oldIconId), RT_ICON);
+      HRSRC oldIconHandle = ApiCaller::ApiCaller::Instance().CallFindResourceW(sourceModuleHandle, MAKEINTRESOURCE(oldIconId), RT_ICON);
       if (oldIconHandle)
       {
         HGLOBAL oldIconDataHandle = LoadResource(sourceModuleHandle, oldIconHandle);

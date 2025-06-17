@@ -29,6 +29,9 @@
     <ClCompile Include="..\Shared\PELoaderStub\PELoaderStub.cpp">
       <Filter>PELoaderStub</Filter>
     </ClCompile>
+    <ClCompile Include="..\Shared\ApiCaller\ApiCaller.cpp">
+      <Filter>ApiCaller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CRT">
@@ -51,6 +54,9 @@
     </Filter>
     <Filter Include="PELoaderStub">
       <UniqueIdentifier>{ccd74711-d078-4364-8337-d80c7b100c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ApiCaller">
+      <UniqueIdentifier>{c4d1676c-238a-4714-b491-4d5e7062b75a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -89,6 +95,9 @@
     </ClInclude>
     <ClInclude Include="..\Shared\PELoaderStub\PELoaderStub.h">
       <Filter>PELoaderStub</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\ApiCaller\ApiCaller.h">
+      <Filter>ApiCaller</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

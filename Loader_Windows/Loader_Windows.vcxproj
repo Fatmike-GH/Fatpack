@@ -144,7 +144,8 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <Optimization>MinSpace</Optimization>
-      <RuntimeLibrary />
+      <RuntimeLibrary>
+      </RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -153,13 +154,14 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>WinMain</EntryPointSymbol>
-      <AdditionalOptions>/DEBUG:NONE /EMITPOGOPHASEINFO %(AdditionalOptions)</AdditionalOptions>
       <EnableUAC>false</EnableUAC>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <FixedBaseAddress>false</FixedBaseAddress>
+      <AdditionalOptions>/DEBUG:NONE /EMITPOGOPHASEINFO %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Shared\ApiCaller\ApiCaller.cpp" />
     <ClCompile Include="..\Shared\CRT\crt.cpp" />
     <ClCompile Include="..\Shared\Decompressor\Decompressor.cpp" />
     <ClCompile Include="..\Shared\Decompressor\TinyLzmaDecompress.cpp" />
@@ -172,6 +174,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Shared\ApiCaller\ApiCaller.h" />
     <ClInclude Include="..\Shared\CRT\crt.h" />
     <ClInclude Include="..\Shared\CRT\crt_tls.h" />
     <ClInclude Include="..\Shared\Decompressor\Decompressor.h" />

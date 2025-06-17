@@ -5,6 +5,7 @@
 #include "..\PELoader\PELoader\PEImage.h"
 #include "..\PELoader\PELoader\PEFile.h"
 #include "..\PELoader\PELoader\TlsResolver.h"
+#include "..\ApiCaller\ApiCaller.h"
 
 namespace PELoaderStub
 {
@@ -61,7 +62,7 @@ namespace PELoaderStub
 
   BYTE* PELoaderStub::GetLastSection(DWORD& rawSize, DWORD& virtualSize)
   {
-    PELoader::PEImage self(GetModuleHandle(nullptr));
+    PELoader::PEImage self(ApiCaller::ApiCaller::Instance().CallGetModuleHandle(nullptr));
     WORD lastSectionIndex = self.GetNumberOfSections() - 1;
     PIMAGE_SECTION_HEADER lastSectionHeader = self.GetSectionHeader(lastSectionIndex);
 
@@ -70,7 +71,7 @@ namespace PELoaderStub
     virtualSize = lastSectionHeader->Misc.VirtualSize;
 
     DWORD oldProtect = 0;
-    VirtualProtect(sectionStart, virtualSize, PAGE_EXECUTE_READWRITE, &oldProtect);
+    ApiCaller::ApiCaller::Instance().CallVirtualProtect(sectionStart, virtualSize, PAGE_EXECUTE_READWRITE, &oldProtect);
 
     return sectionStart;
   }
