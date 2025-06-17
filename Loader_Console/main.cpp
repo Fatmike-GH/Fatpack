@@ -32,7 +32,7 @@ void TlsCallbackProxy(PVOID hModule, DWORD dwReason, PVOID pContext)
   }
 }
 
-void main()
+int main()
 {
   _tlsResolver = new PELoader::TlsResolver();
 
@@ -44,4 +44,6 @@ void main()
   LPVOID entryPoint = _peImage->GetEntryPoint();
   _entryPointCalled = TRUE;
   ((void(*)())(entryPoint))();
+
+  return 0;
 }
