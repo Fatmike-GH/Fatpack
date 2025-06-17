@@ -10,11 +10,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fatpack", "Fatpack\Fatpack.
 		{E373949F-E084-4DD4-A445-43B2672C42AA} = {E373949F-E084-4DD4-A445-43B2672C42AA}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Console_Resource", "Loader_Console\Loader_Console_Resource.vcxproj", "{E373949F-E084-4DD4-A445-43B2672C42AA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Console_Resource", "Loader_Console_Resource\Loader_Console_Resource.vcxproj", "{E373949F-E084-4DD4-A445-43B2672C42AA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceAdder", "ResourceAdder\ResourceAdder.vcxproj", "{D6392848-12A3-4B94-BF4C-1CE727F12D0B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Windows_Resource", "Loader_Windows\Loader_Windows_Resource.vcxproj", "{6482B097-A9DE-4D2F-B103-7DF0BC56B231}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Windows_Resource", "Loader_Windows_Resource\Loader_Windows_Resource.vcxproj", "{6482B097-A9DE-4D2F-B103-7DF0BC56B231}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
