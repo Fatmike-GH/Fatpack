@@ -49,7 +49,7 @@ namespace Packer
 
   bool ResourcePacker::PrepareLoaderStub()
   {
-    if (!_packerUtils->PrepareLoaderStub(_inputFile, _peLoader))
+    if (!_packerUtils->PrepareResourceLoaderStub(_inputFile, _peLoader))
     {
       SetLastError(_packerUtils->GetLastError());
       return false;

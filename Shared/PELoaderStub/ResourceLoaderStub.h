@@ -14,24 +14,17 @@ namespace ResourceLoader
 
 namespace PELoaderStub
 {
-  class PELoaderStub
+  class ResourceLoaderStub
   {
   public:
-    PELoaderStub();
-    ~PELoaderStub();
+    ResourceLoaderStub();
+    ~ResourceLoaderStub();
 
     PELoader::PEImage* Load(PELoader::TlsResolver* tlsResolver);
 
   private:
-
-    bool IsResourceAvailable();
-
     PELoader::PEImage* LoadFromResource(PELoader::TlsResolver* tlsResolver);
-    PELoader::PEImage* LoadFromSection(PELoader::TlsResolver* tlsResolver);
-
     BYTE* GetCompressedDataFromResource(DWORD& compressedSize);
-    BYTE* GetLastSection(DWORD& rawSize, DWORD& virtualSize);
-
     BYTE* Decompress(BYTE* compressedData, DWORD compressedSize, size_t& decompressedSize);
     PELoader::PEImage* CreatePEImageFromMemory(BYTE* peFileBuffer, PELoader::TlsResolver* tlsResolver, LPVOID allocatedImageBase = nullptr);
   };

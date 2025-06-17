@@ -29,34 +29,34 @@
     <ClCompile Include="..\Shared\ApiCaller\ApiCaller.cpp">
       <Filter>ApiCaller</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shared\PELoaderStub\ResourceLoaderStub.cpp">
+    <ClCompile Include="..\Shared\PELoaderStub\SectionLoaderStub.cpp">
       <Filter>PELoaderStub</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="CRT">
-      <UniqueIdentifier>{26ee8355-4a30-474e-9804-2a5dd66241ef}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ResourceLoader">
-      <UniqueIdentifier>{f26f6ac7-016a-4050-92a7-fa09dd2d02ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TypeDefs">
-      <UniqueIdentifier>{76cc35a7-9632-4fb7-abdf-ad58935b1ea4}</UniqueIdentifier>
+    <Filter Include="PELoader">
+      <UniqueIdentifier>{8bc8722f-41fb-405d-a2f5-48c040013e7d}</UniqueIdentifier>
     </Filter>
     <Filter Include="TlsCallbackProxy">
-      <UniqueIdentifier>{99f38114-3632-4185-9806-112071789014}</UniqueIdentifier>
+      <UniqueIdentifier>{8cd4ed16-89d6-4c5c-b102-26b5626249e3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PELoader">
-      <UniqueIdentifier>{15defd60-dee7-4278-b7d5-caa308c1731f}</UniqueIdentifier>
+    <Filter Include="TypeDefs">
+      <UniqueIdentifier>{b5a4e8a5-6067-4597-ac61-8c68e7e2e6c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CRT">
+      <UniqueIdentifier>{f83fac1d-c5cf-4b1f-99d8-19371c40002f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResourceLoader">
+      <UniqueIdentifier>{a247ea49-dee8-4075-8bb7-aaf43fe552d2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Decompressor">
-      <UniqueIdentifier>{5779bd0d-7384-41a8-85b9-7496dd4e3b8c}</UniqueIdentifier>
+      <UniqueIdentifier>{89b152b3-51c6-4a6c-90ec-7f8f0de1026d}</UniqueIdentifier>
     </Filter>
     <Filter Include="PELoaderStub">
-      <UniqueIdentifier>{ccd74711-d078-4364-8337-d80c7b100c2d}</UniqueIdentifier>
+      <UniqueIdentifier>{54e5439f-4789-4650-a902-4c2da15d678f}</UniqueIdentifier>
     </Filter>
     <Filter Include="ApiCaller">
-      <UniqueIdentifier>{c4d1676c-238a-4714-b491-4d5e7062b75a}</UniqueIdentifier>
+      <UniqueIdentifier>{bb7cb992-0b8e-444d-8d03-b46546268647}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,7 +96,7 @@
     <ClInclude Include="..\Shared\ApiCaller\ApiCaller.h">
       <Filter>ApiCaller</Filter>
     </ClInclude>
-    <ClInclude Include="..\Shared\PELoaderStub\ResourceLoaderStub.h">
+    <ClInclude Include="..\Shared\PELoaderStub\SectionLoaderStub.h">
       <Filter>PELoaderStub</Filter>
     </ClInclude>
   </ItemGroup>

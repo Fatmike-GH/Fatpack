@@ -5,7 +5,9 @@ VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fatpack", "Fatpack\Fatpack.vcxproj", "{23B3307D-097A-4F6F-BD3D-AB61BEA6D30C}"
 	ProjectSection(ProjectDependencies) = postProject
+		{1378C489-F61E-4A00-9757-34D7A88B42E9} = {1378C489-F61E-4A00-9757-34D7A88B42E9}
 		{6482B097-A9DE-4D2F-B103-7DF0BC56B231} = {6482B097-A9DE-4D2F-B103-7DF0BC56B231}
+		{7B2040C9-F75E-4D32-9D50-B34DAA46FDB4} = {7B2040C9-F75E-4D32-9D50-B34DAA46FDB4}
 		{D6392848-12A3-4B94-BF4C-1CE727F12D0B} = {D6392848-12A3-4B94-BF4C-1CE727F12D0B}
 		{E373949F-E084-4DD4-A445-43B2672C42AA} = {E373949F-E084-4DD4-A445-43B2672C42AA}
 	EndProjectSection
@@ -15,6 +17,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceAdder", "ResourceAdder\ResourceAdder.vcxproj", "{D6392848-12A3-4B94-BF4C-1CE727F12D0B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Windows_Resource", "Loader_Windows_Resource\Loader_Windows_Resource.vcxproj", "{6482B097-A9DE-4D2F-B103-7DF0BC56B231}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Console_Section", "Loader_Console_Section\Loader_Console_Section.vcxproj", "{1378C489-F61E-4A00-9757-34D7A88B42E9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Loader_Windows_Section", "Loader_Windows_Section\Loader_Windows_Section.vcxproj", "{7B2040C9-F75E-4D32-9D50-B34DAA46FDB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +44,14 @@ Global
 		{6482B097-A9DE-4D2F-B103-7DF0BC56B231}.Debug|x64.Build.0 = Debug|x64
 		{6482B097-A9DE-4D2F-B103-7DF0BC56B231}.Release|x64.ActiveCfg = Release|x64
 		{6482B097-A9DE-4D2F-B103-7DF0BC56B231}.Release|x64.Build.0 = Release|x64
+		{1378C489-F61E-4A00-9757-34D7A88B42E9}.Debug|x64.ActiveCfg = Debug|x64
+		{1378C489-F61E-4A00-9757-34D7A88B42E9}.Debug|x64.Build.0 = Debug|x64
+		{1378C489-F61E-4A00-9757-34D7A88B42E9}.Release|x64.ActiveCfg = Release|x64
+		{1378C489-F61E-4A00-9757-34D7A88B42E9}.Release|x64.Build.0 = Release|x64
+		{7B2040C9-F75E-4D32-9D50-B34DAA46FDB4}.Debug|x64.ActiveCfg = Debug|x64
+		{7B2040C9-F75E-4D32-9D50-B34DAA46FDB4}.Debug|x64.Build.0 = Debug|x64
+		{7B2040C9-F75E-4D32-9D50-B34DAA46FDB4}.Release|x64.ActiveCfg = Release|x64
+		{7B2040C9-F75E-4D32-9D50-B34DAA46FDB4}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

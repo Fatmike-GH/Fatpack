@@ -22,7 +22,7 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{e373949f-e084-4dd4-a445-43b2672c42aa}</ProjectGuid>
-    <RootNamespace>LoaderConsole</RootNamespace>
+    <RootNamespace>LoaderConsoleResource</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>Loader_Console_Resource</ProjectName>
   </PropertyGroup>
@@ -171,7 +171,7 @@
     <ClCompile Include="..\Shared\CRT\crt.cpp" />
     <ClCompile Include="..\Shared\Decompressor\Decompressor.cpp" />
     <ClCompile Include="..\Shared\Decompressor\TinyLzmaDecompress.cpp" />
-    <ClCompile Include="..\Shared\PELoaderStub\PELoaderStub.cpp" />
+    <ClCompile Include="..\Shared\PELoaderStub\ResourceLoaderStub.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PEFile.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PEImage.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PELoader.cpp" />
@@ -185,7 +185,7 @@
     <ClInclude Include="..\Shared\CRT\crt_tls.h" />
     <ClInclude Include="..\Shared\Decompressor\Decompressor.h" />
     <ClInclude Include="..\Shared\Decompressor\TinyLzmaDecompress.h" />
-    <ClInclude Include="..\Shared\PELoaderStub\PELoaderStub.h" />
+    <ClInclude Include="..\Shared\PELoaderStub\ResourceLoaderStub.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PEFile.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PEImage.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PELoader.h" />

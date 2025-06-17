@@ -21,10 +21,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6482b097-a9de-4d2f-b103-7df0bc56b231}</ProjectGuid>
-    <RootNamespace>LoaderWindowsResource</RootNamespace>
+    <ProjectGuid>{7b2040c9-f75e-4d32-9d50-b34daa46fdb4}</ProjectGuid>
+    <RootNamespace>LoaderWindowsSection</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Loader_Windows_Resource</ProjectName>
+    <ProjectName>Loader_Windows_Section</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,12 +73,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\build\obj\Loader_Windows_Resource\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\build\obj\Loader_Windows_Section\$(Platform)\$(Configuration)\</IntDir>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\build\obj\Loader_Windows_Resource\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\build\obj\Loader_Windows_Section\$(Platform)\$(Configuration)\</IntDir>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -166,7 +166,7 @@
     <ClCompile Include="..\Shared\CRT\crt.cpp" />
     <ClCompile Include="..\Shared\Decompressor\Decompressor.cpp" />
     <ClCompile Include="..\Shared\Decompressor\TinyLzmaDecompress.cpp" />
-    <ClCompile Include="..\Shared\PELoaderStub\ResourceLoaderStub.cpp" />
+    <ClCompile Include="..\Shared\PELoaderStub\SectionLoaderStub.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PEFile.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PEImage.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PELoader.cpp" />
@@ -180,7 +180,7 @@
     <ClInclude Include="..\Shared\CRT\crt_tls.h" />
     <ClInclude Include="..\Shared\Decompressor\Decompressor.h" />
     <ClInclude Include="..\Shared\Decompressor\TinyLzmaDecompress.h" />
-    <ClInclude Include="..\Shared\PELoaderStub\ResourceLoaderStub.h" />
+    <ClInclude Include="..\Shared\PELoaderStub\SectionLoaderStub.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PEFile.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PEImage.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PELoader.h" />

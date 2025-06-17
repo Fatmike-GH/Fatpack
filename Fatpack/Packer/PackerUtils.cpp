@@ -53,20 +53,37 @@ namespace Packer
     return true;
   }
 
-  bool PackerUtils::PrepareLoaderStub(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
+  bool PackerUtils::PrepareResourceLoaderStub(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
+  {
+    if (inputFile.IsConsole())
+    {
+      return PrepareLoaderStub(peLoader, 1000);
+    }
+    else
+    {
+      return PrepareLoaderStub(peLoader, 1001);
+    }
+  }
+
+  bool PackerUtils::PrepareSectionLoaderStub(PEFile::PEFile& inputFile, PEFile::PEFile& peLoader)
+  {
+    if (inputFile.IsConsole())
+    {
+      return PrepareLoaderStub(peLoader, 1002);
+    }
+    else
+    {
+      return PrepareLoaderStub(peLoader, 1003);
+    }
+  }
+
+  bool PackerUtils::PrepareLoaderStub(PEFile::PEFile& peLoader, WORD resourceId)
   {
     ResourceLoader::ResourceLoader resourceLoader;
     DWORD size = 0;
     BYTE* buffer = nullptr;
 
-    if (inputFile.IsConsole())
-    {
-      buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1000), RT_RCDATA, size);
-    }
-    else
-    {
-      buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(1001), RT_RCDATA, size);
-    }
+    buffer = resourceLoader.LoadResource(MAKEINTRESOURCE(resourceId), RT_RCDATA, size);
 
     if (!buffer || size == 0 || !peLoader.LoadFromBuffer(buffer, size))
     {

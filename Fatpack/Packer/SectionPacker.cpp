@@ -51,7 +51,7 @@ namespace Packer
 
   bool SectionPacker::PrepareLoaderStub()
   {
-    if (!_packerUtils->PrepareLoaderStub(_inputFile, _peLoader))
+    if (!_packerUtils->PrepareSectionLoaderStub(_inputFile, _peLoader))
     {
       SetLastError(_packerUtils->GetLastError());
       return false;

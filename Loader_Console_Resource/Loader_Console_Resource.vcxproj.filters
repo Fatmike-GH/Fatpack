@@ -26,11 +26,11 @@
     <ClCompile Include="..\Shared\Decompressor\TinyLzmaDecompress.cpp">
       <Filter>Decompressor</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shared\PELoaderStub\PELoaderStub.cpp">
-      <Filter>PELoaderStub</Filter>
-    </ClCompile>
     <ClCompile Include="..\Shared\ApiCaller\ApiCaller.cpp">
       <Filter>ApiCaller</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Shared\PELoaderStub\ResourceLoaderStub.cpp">
+      <Filter>PELoaderStub</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -93,11 +93,11 @@
     <ClInclude Include="..\Shared\Decompressor\TinyLzmaDecompress.h">
       <Filter>Decompressor</Filter>
     </ClInclude>
-    <ClInclude Include="..\Shared\PELoaderStub\PELoaderStub.h">
-      <Filter>PELoaderStub</Filter>
-    </ClInclude>
     <ClInclude Include="..\Shared\ApiCaller\ApiCaller.h">
       <Filter>ApiCaller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Shared\PELoaderStub\ResourceLoaderStub.h">
+      <Filter>PELoaderStub</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

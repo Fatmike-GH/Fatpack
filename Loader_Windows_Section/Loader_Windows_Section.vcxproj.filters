@@ -29,7 +29,7 @@
     <ClCompile Include="..\Shared\ApiCaller\ApiCaller.cpp">
       <Filter>ApiCaller</Filter>
     </ClCompile>
-    <ClCompile Include="..\Shared\PELoaderStub\ResourceLoaderStub.cpp">
+    <ClCompile Include="..\Shared\PELoaderStub\SectionLoaderStub.cpp">
       <Filter>PELoaderStub</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,7 +96,7 @@
     <ClInclude Include="..\Shared\ApiCaller\ApiCaller.h">
       <Filter>ApiCaller</Filter>
     </ClInclude>
-    <ClInclude Include="..\Shared\PELoaderStub\ResourceLoaderStub.h">
+    <ClInclude Include="..\Shared\PELoaderStub\SectionLoaderStub.h">
       <Filter>PELoaderStub</Filter>
     </ClInclude>
   </ItemGroup>

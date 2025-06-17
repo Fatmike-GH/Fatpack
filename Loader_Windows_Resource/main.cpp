@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include "..\Shared\PELoaderStub\PELoaderStub.h"
+#include "..\Shared\PELoaderStub\ResourceLoaderStub.h"
 #include "..\Shared\PELoader\PELoader\PEImage.h"
 #include "..\Shared\PELoader\PELoader\TlsResolver.h"
 #include "..\Shared\PELoader\TlsCallbackProxy\TlsCallbackProxy.h"
@@ -36,7 +36,7 @@ int main()
 {
   _tlsResolver = new PELoader::TlsResolver();
 
-  PELoaderStub::PELoaderStub* peLoaderStub = new PELoaderStub::PELoaderStub();
+  PELoaderStub::ResourceLoaderStub* peLoaderStub = new PELoaderStub::ResourceLoaderStub();
   _peImage = peLoaderStub->Load(_tlsResolver);
   delete peLoaderStub;
 

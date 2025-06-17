@@ -21,10 +21,10 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{6482b097-a9de-4d2f-b103-7df0bc56b231}</ProjectGuid>
-    <RootNamespace>LoaderWindowsResource</RootNamespace>
+    <ProjectGuid>{1378c489-f61e-4a00-9757-34d7a88b42e9}</ProjectGuid>
+    <RootNamespace>LoaderConsoleSection</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Loader_Windows_Resource</ProjectName>
+    <ProjectName>Loader_Console_Section</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,12 +73,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\build\obj\Loader_Windows_Resource\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\build\obj\Loader_Console_Section\$(Platform)\$(Configuration)\</IntDir>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\build\obj\Loader_Windows_Resource\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(SolutionDir)\build\obj\Loader_Console_Section\$(Platform)\$(Configuration)\</IntDir>
     <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,19 +115,25 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalOptions>/Zc:threadSafeInit- /Gs10000000 %(AdditionalOptions)</AdditionalOptions>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
       <ExceptionHandling>false</ExceptionHandling>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary />
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <AdditionalOptions>/Zc:threadSafeInit- /Gs10000000 %(AdditionalOptions)</AdditionalOptions>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FunctionLevelLinking>
+      </FunctionLevelLinking>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-      <EntryPointSymbol>main</EntryPointSymbol>
       <EnableUAC>false</EnableUAC>
+      <EntryPointSymbol>main</EntryPointSymbol>
+      <StackReserveSize>
+      </StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <FixedBaseAddress>false</FixedBaseAddress>
     </Link>
@@ -140,25 +146,24 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <ExceptionHandling>false</ExceptionHandling>
+      <RuntimeLibrary />
+      <BufferSecurityCheck>false</BufferSecurityCheck>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <ExceptionHandling>false</ExceptionHandling>
       <Optimization>MinSpace</Optimization>
-      <RuntimeLibrary>
-      </RuntimeLibrary>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
-      <EntryPointSymbol>main</EntryPointSymbol>
       <EnableUAC>false</EnableUAC>
+      <EntryPointSymbol>main</EntryPointSymbol>
+      <AdditionalOptions>/DEBUG:NONE /EMITPOGOPHASEINFO %(AdditionalOptions)</AdditionalOptions>
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <FixedBaseAddress>false</FixedBaseAddress>
-      <AdditionalOptions>/DEBUG:NONE /EMITPOGOPHASEINFO %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -166,7 +171,7 @@
     <ClCompile Include="..\Shared\CRT\crt.cpp" />
     <ClCompile Include="..\Shared\Decompressor\Decompressor.cpp" />
     <ClCompile Include="..\Shared\Decompressor\TinyLzmaDecompress.cpp" />
-    <ClCompile Include="..\Shared\PELoaderStub\ResourceLoaderStub.cpp" />
+    <ClCompile Include="..\Shared\PELoaderStub\SectionLoaderStub.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PEFile.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PEImage.cpp" />
     <ClCompile Include="..\Shared\PELoader\PELoader\PELoader.cpp" />
@@ -180,7 +185,7 @@
     <ClInclude Include="..\Shared\CRT\crt_tls.h" />
     <ClInclude Include="..\Shared\Decompressor\Decompressor.h" />
     <ClInclude Include="..\Shared\Decompressor\TinyLzmaDecompress.h" />
-    <ClInclude Include="..\Shared\PELoaderStub\ResourceLoaderStub.h" />
+    <ClInclude Include="..\Shared\PELoaderStub\SectionLoaderStub.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PEFile.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PEImage.h" />
     <ClInclude Include="..\Shared\PELoader\PELoader\PELoader.h" />
