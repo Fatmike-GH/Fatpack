@@ -25,9 +25,9 @@ namespace ApiCaller
 
   HRSRC ApiCaller::CallFindResourceW(HMODULE hModule, LPCWSTR lpName, LPCWSTR lpType)
   {
-    /*auto function = (decltype(FindResourceW)*)ResolveKernel32Api("FindResourceW");
-    return function(hModule, lpName, lpType);*/
-    return FindResourceW(hModule, lpName, lpType);
+    auto function = (decltype(FindResourceW)*)ResolveKernel32Api("FindResourceW");
+    return function(hModule, lpName, lpType);
+    //return FindResourceW(hModule, lpName, lpType);
   }
 
   HMODULE ApiCaller::CallGetModuleHandle(LPCSTR lpModuleName)
@@ -79,9 +79,9 @@ namespace ApiCaller
 
   HGLOBAL ApiCaller::CallLoadResource(HMODULE hModule, HRSRC hResInfo)
   {
-    /*auto function = (decltype(LoadResource)*)ResolveKernel32Api("LoadResource");
-    return function(hModule, hResInfo);*/
-    return LoadResource(hModule, hResInfo);
+    auto function = (decltype(LoadResource)*)ResolveKernel32Api("LoadResource");
+    return function(hModule, hResInfo);
+    //return LoadResource(hModule, hResInfo);
   }
 
   LPVOID ApiCaller::CallLockResource(HGLOBAL hResData)
@@ -98,9 +98,9 @@ namespace ApiCaller
 
   DWORD ApiCaller::CallSizeofResource(HMODULE hModule, HRSRC hResInfo)
   {
-    /*auto function = (decltype(SizeofResource)*)ResolveKernel32Api("SizeofResource");
-    return function(hModule, hResInfo);*/
-    return SizeofResource(hModule, hResInfo);
+    auto function = (decltype(SizeofResource)*)ResolveKernel32Api("SizeofResource");
+    return function(hModule, hResInfo);
+    //return SizeofResource(hModule, hResInfo);
   }
 
   LPVOID ApiCaller::CallVirtualAlloc(LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect)
