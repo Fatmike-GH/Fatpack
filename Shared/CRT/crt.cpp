@@ -69,6 +69,35 @@ int __cdecl strncmp(
   return 0;
 }
 
+#pragma function(wcslen)
+_Check_return_
+_ACRTIMP size_t __cdecl wcslen(
+  _In_z_ wchar_t const* _String
+)
+{
+    const wchar_t* _Start = _String;
+  while (*_String)
+  {
+    ++_String;
+  }
+  return (size_t)(_String - _Start);
+}
+
+#pragma function(wcscmp)
+_Check_return_
+_ACRTIMP int __cdecl wcscmp(
+  _In_z_ wchar_t const* _String1,
+  _In_z_ wchar_t const* _String2
+)
+{
+  while (*_String1 && (*_String1 == *_String2))
+  {
+    _String1++;
+    _String2++;
+  }
+  return (int)((unsigned int)*_String1 - (unsigned int)*_String2);
+}
+
 _Check_return_ _Ret_maybenull_ _Post_writable_byte_size_(size)
 _CRTALLOCATOR _CRT_JIT_INTRINSIC _CRTRESTRICT _CRT_HYBRIDPATCHABLE
 void* __cdecl malloc(
