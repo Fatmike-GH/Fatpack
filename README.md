@@ -6,7 +6,7 @@ Keywords: PE packer, PE loader, executable packer, manual mapping, manual mapper
 
 ## Motivation
 
-A practical application of my PE loader: https://github.com/Fatmike-GH/PELoader  
+A practical application of my PE loader (manual mapper): https://github.com/Fatmike-GH/PELoader  
 
 ## Usage
 
