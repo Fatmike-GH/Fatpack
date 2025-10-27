@@ -1,6 +1,6 @@
 # Fatpack  
 
-A Windows executable (PE) packer (x64) with LZMA compression and with full TLS (Thread Local Storage) support.  
+A Windows PE packer for executables (x64) with LZMA compression and with full TLS (Thread Local Storage) support.  
 
 Keywords: PE packer, PE loader, executable packer, manual mapping, manual mapper, portable executable, LZMA, UPX, EXE
 
